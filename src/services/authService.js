@@ -1,79 +1,61 @@
 // src/services/authService.js
 
-// Use the `VITE_BACK_END_SERVER_URL` environment variable to set the base URL.
-// Note the `/auth` path added to the server URL that forms the base URL for
-// all the requests in this service.
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/auth`;
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api`;
 
 const signUp = async (formData) => {
   try {
-    const res = await fetch(`${BASE_URL}/sign-up`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
     const data = await res.json();
 
-    if (data.err) {
-      throw new Error(data.err);
+    if (!res.ok) {
+      throw new Error(data.detail || "Registration failed");
     }
 
     if (data.token) {
-      // first save the raw token in local storage
-      localStorage.setItem('token', data.token);
-      // then extract the payload (second part of the token)
-      const payload = data.token.split('.')[1]
-
-      // Convert the serialized payload into JSON
-      const tokenJSON = atob(payload)
-
-      // Take that json and convert it back into JS
-      return JSON.parse(tokenJSON)
+      localStorage.setItem("token", data.token);
+      const payload = data.token.split(".")[1];
+      const tokenJSON = atob(payload);
+      return JSON.parse(tokenJSON);
     }
 
-    throw new Error('Invalid response from server');
+    throw new Error("Invalid response from server");
   } catch (err) {
     console.log(err);
-    throw new Error(err);
+    throw new Error(err.message || err);
   }
 };
 
 const signIn = async (formData) => {
   try {
-    const res = await fetch(`${BASE_URL}/sign-in`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
     const data = await res.json();
 
-    if (data.err) {
-      throw new Error(data.err);
+    if (!res.ok) {
+      throw new Error(data.detail || "Login failed");
     }
 
     if (data.token) {
-      // first save the raw token in local storage
-      localStorage.setItem('token', data.token);
-      // then extract the payload (second part of the token)
-      const payload = data.token.split('.')[1]
-
-      // Convert the serialized payload into JSON
-      const tokenJSON = atob(payload)
-
-      // Take that json and convert it back into JS
-      return JSON.parse(tokenJSON)
+      localStorage.setItem("token", data.token);
+      const payload = data.token.split(".")[1];
+      const tokenJSON = atob(payload);
+      return JSON.parse(tokenJSON);
     }
 
-    throw new Error('Invalid response from server');
+    throw new Error("Invalid response from server");
   } catch (err) {
     console.log(err);
-    throw new Error(err);
+    throw new Error(err.message || err);
   }
 };
 
-export {
-  signUp,
-  signIn,
-};
+export { signUp, signIn };

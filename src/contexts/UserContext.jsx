@@ -1,35 +1,59 @@
-import { createContext, useState } from 'react';
+// src/contexts/UserContext.jsx
 
-const UserContext = createContext();
+import { createContext, useState, useEffect, useContext } from "react";
+import { signIn, signUp } from "../services/authService";
+import { currentUser } from "../services/userService";
 
-function getUserFromToken(){
-    // pull the raw token from local storage
-    const token = localStorage.getItem('token');
+export const UserContext = createContext();
 
-    // if there is no token, then the user is not signed in
-    if(!token) return null
+export function UserProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    // then extract the payload (second part of the token)
-    const payload = token.split('.')[1]
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-    // Convert the serialized payload into JSON
-    const tokenJSON = atob(payload)
+    currentUser()
+      .then(setUser)
+      .catch(() => {
+        localStorage.removeItem("token");
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-    // Take that json and convert it back into JS
-    return JSON.parse(tokenJSON)
-}
+  const login = async (credentials) => {
+    const userData = await signIn(credentials);
+    const me = await currentUser();
+    setUser(me || userData);
+    return userData;
+  };
 
-function UserProvider({ children }) {
+  const register = async (userData) => {
+    const newUser = await signUp(userData);
+    const me = await currentUser();
+    setUser(me || newUser);
+    return newUser;
+  };
 
- const [user, setUser] = useState(getUserFromToken())
-
- const value = { user, setUser }
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
 
   return (
-    <UserContext.Provider value={value}>
+    <UserContext.Provider
+      value={{ user, setUser, login, register, logout, loading }}
+    >
       {children}
     </UserContext.Provider>
   );
-};
+}
 
-export { UserProvider, UserContext };
+export function useUser() {
+  return useContext(UserContext);
+}

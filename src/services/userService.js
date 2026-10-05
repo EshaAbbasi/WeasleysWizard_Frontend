@@ -1,30 +1,24 @@
-// THIS IS A DEMO OF AN AUTHENTICATED FETCH REQUEST
-
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/protected`;
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api`;
 
 const currentUser = async () => {
   try {
-    const config = {
+    const res = await fetch(`${BASE_URL}/current_user`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    }
-    const res = await fetch(BASE_URL, config);
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
     const data = await res.json();
 
-    if (data.err) {
-      throw new Error(data.err);
+    if (!res.ok) {
+      throw new Error(data.detail || "Unauthorized");
     }
 
-    return data
+    return data;
   } catch (err) {
     console.log(err);
-    throw new Error(err);
+    throw new Error(err.message || err);
   }
 };
 
-
-export {
-  currentUser,
-};
+export { currentUser };
