@@ -1,14 +1,23 @@
 import { useContext } from "react";
+import { NavLink, Outlet } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 
 const OwnerDashboard = () => {
-  const { user } = useContext(UserContext);
+  const { logout } = useContext(UserContext);
 
   return (
-    <main>
-      <h1>Welcome{user?.username ? `, ${user.username}` : ""}!</h1>
-      <p>Welcome to your owner dashboard.</p>
-    </main>
+    <div className="dashboard-layout">
+      <aside className="dashboard-sidebar">
+        <NavLink to="/owner-dashboard/profile">Profile</NavLink>
+        <NavLink to="/owner-dashboard/products">Products</NavLink>
+        <NavLink to="/owner-dashboard/orders">Orders</NavLink>
+        <NavLink to="/owner-dashboard/sales">Sales Overview</NavLink>
+        <button onClick={logout}>Log Out</button>
+      </aside>
+      <main className="dashboard-content">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 

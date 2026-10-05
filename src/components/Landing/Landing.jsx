@@ -34,16 +34,7 @@ const Landing = () => {
         ))}
       </div>
 
-      <div className="landing-content">
-        <h1>Weasleys' Wizard Wheezes</h1>
-        <p>
-          Welcome, wizard. Step inside for the finest mischief Diagon Alley has
-          to offer.
-        </p>
-        <p className="landing-sub">
-          Sign up now, or sign in to see your dashboard.
-        </p>
-      </div>
+      <div className="landing-content"></div>
     </main>
   );
 };
