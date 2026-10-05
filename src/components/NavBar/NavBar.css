@@ -1,0 +1,67 @@
+/* src/components/NavBar/NavBar.css */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 8, 4, 0.55),
+    rgba(10, 8, 4, 0)
+  );
+}
+
+.navbar-logo {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #f5ecd9;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+
+.navbar-logo:hover {
+  color: #ffe9b3;
+  text-shadow: 0 0 14px rgba(212, 175, 55, 0.9);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li a,
+.navbar-links li {
+  color: #f5ecd9;
+  font-family: "Cinzel", serif;
+  font-size: 0.95rem;
+}
+
+.navbar-links li a:hover {
+  color: #ffe9b3;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+}
+
+.navbar-greeting {
+  opacity: 0.85;
+  font-style: italic;
+  font-family: "EB Garamond", serif;
+}
+
+/* When the navbar sits over a light/plain page instead of the hero image,
+   this modifier keeps the text readable (dark instead of cream). */
+.navbar.on-light .navbar-logo,
+.navbar.on-light .navbar-links li a,
+.navbar.on-light .navbar-greeting {
+  color: #2b2318;
+  text-shadow: none;
+}

@@ -1,0 +1,51 @@
+/* src/index.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital@0;1&display=swap");
+
+:root {
+  --parchment-bg: #f5ecd9;
+  --parchment-card: #fffaf0;
+  --ink: #2b2318;
+  --ink-soft: #5a4d3a;
+  --hogwarts-gold: #b8860b;
+  --hogwarts-gold-bright: #d4af37;
+  --border-soft: #d8c7a0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--parchment-bg);
+  color: var(--ink);
+  font-family: "EB Garamond", Georgia, serif;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Cinzel", serif;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: var(--hogwarts-gold);
+  text-decoration: none;
+  transition:
+    text-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+a:hover {
+  color: var(--hogwarts-gold-bright);
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+}
+
+button {
+  font-family: "Cinzel", serif;
+  cursor: pointer;
+}
