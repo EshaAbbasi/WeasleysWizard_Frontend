@@ -54,7 +54,7 @@ const SignUpForm = (props) => {
 
       const newUser = await signUp(payload);
       setUser(newUser);
-      navigate("/");
+      navigate(role === "owner" ? "/owner-dashboard" : "/customer-dashboard");
     } catch (error) {
       setMessage(error.message);
     }
