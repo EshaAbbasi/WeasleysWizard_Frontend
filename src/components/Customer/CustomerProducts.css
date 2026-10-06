@@ -1,0 +1,149 @@
+.cp {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cp-head h2 {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.cp-head p {
+  margin: 4px 0 12px;
+  color: #4a3718;
+}
+
+.cp-note {
+  margin: 0;
+  color: #4a3718;
+  font-weight: 700;
+}
+
+.cp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.cp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+
+.cp-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 30px rgba(40, 25, 8, 0.4);
+}
+
+.cp-img {
+  position: relative;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: rgba(90, 61, 8, 0.12);
+  color: #5a4520;
+  font-size: 0.85rem;
+}
+
+.cp-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.cp-card:hover .cp-img img {
+  transform: scale(1.06);
+}
+
+.cp-fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: #8d0000;
+  background: rgba(251, 246, 234, 0.92);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.cp-fav:hover {
+  transform: scale(1.12);
+}
+
+.cp-fav.on {
+  color: #f5ecd9;
+  background: #8d0000;
+}
+
+.cp-cat {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a6510;
+}
+
+.cp-card h3 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.cp-price {
+  margin: 2px 0 8px;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #7a1212;
+}
+
+.cp-add {
+  margin-top: auto;
+  cursor: pointer;
+  padding: 11px 16px;
+  border-radius: 999px;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  border: 1px solid #b8960c;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+
+.cp-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(141, 0, 0, 0.5);
+}
+
+.cp-add.done {
+  background: linear-gradient(135deg, #2f6b1f, #1d4a12);
+}
+
+@media (max-width: 480px) {
+  .cp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .cp-card h3 {
+    font-size: 0.95rem;
+  }
+}

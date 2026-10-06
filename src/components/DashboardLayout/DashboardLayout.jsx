@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { NavLink, Outlet } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
+import { useCart } from "../../contexts/CartContext";
 import "./DashboardLayout.css";
 
 const DashboardLayout = ({ links }) => {

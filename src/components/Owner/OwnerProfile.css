@@ -1,0 +1,109 @@
+.pf {
+  max-width: 640px;
+}
+
+.pf h2 {
+  font-size: 1.5rem;
+  margin-bottom: 14px;
+}
+
+.pf form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.pf-note {
+  margin: 0;
+  color: #4a3718;
+}
+
+.pf-error {
+  color: #7a1212;
+  font-weight: 700;
+}
+
+.pf-status {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.pf-status.ok {
+  background: #cfe5c4;
+  color: #1d4a12;
+}
+.pf-status.wait {
+  background: #f2e2a6;
+  color: #5a4208;
+}
+
+.pf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pf-field label {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #2b1d08;
+}
+
+.pf-field input,
+.pf-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  font-family: "EB Garamond", serif;
+  font-size: 1.05rem;
+  color: #1a1209;
+  background: rgba(255, 248, 225, 0.5);
+  border: none;
+  border-bottom: 2px solid rgba(43, 29, 8, 0.75);
+  border-radius: 6px 6px 0 0;
+  outline: none;
+  resize: vertical;
+}
+
+.pf-field input:focus,
+.pf-field textarea:focus {
+  background: rgba(255, 248, 225, 0.8);
+  border-bottom-color: #b8891b;
+}
+
+.pf-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(166, 124, 26, 0.5);
+}
+
+.pf-btn {
+  align-self: flex-start;
+  cursor: pointer;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  border: 1px solid #b8960c;
+  transition: transform 0.2s;
+}
+
+.pf-btn:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 560px) {
+  .pf-btn {
+    width: 100%;
+  }
+}

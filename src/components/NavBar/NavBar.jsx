@@ -23,11 +23,7 @@ const NavBar = () => {
         {user ? (
           <>
             <li className="navbar-greeting">Hello, {user.username}</li>
-            <li>
-              <Link to="/" className="nav-btn outline" onClick={handleSignOut}>
-                Sign Out
-              </Link>
-            </li>
+            <li></li>
           </>
         ) : (
           <>

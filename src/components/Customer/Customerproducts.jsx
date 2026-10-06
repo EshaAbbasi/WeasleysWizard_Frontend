@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import customerService from "../../services/customerService";
 import productService from "../../services/productService";
+import { useCart } from "../../contexts/CartContext";
+import CategoryBar from "./CategoryBar";
+import "./CustomerProducts.css";
 
 const Products = () => {
+  const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]); // ids favorited this session
+  const [justAdded, setJustAdded] = useState(null); // id for the "Added" flash
 
   useEffect(() => {
     productService
@@ -15,42 +22,86 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     customerService
-      .listProducts(selectedCategory || undefined)
+      .listProducts(selectedCategory === "All" ? undefined : selectedCategory)
       .then(setProducts)
-      .catch(() => setProducts([]));
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
   }, [selectedCategory]);
 
   const handleFavorite = async (productId) => {
-    await customerService.toggleFavorite(productId, true);
-    alert("Added to favorites!");
+    try {
+      await customerService.toggleFavorite(productId, true);
+      setFavorites((prev) => [...prev, productId]);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleAdd = (product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price_gbp: product.price_gbp,
+      image: product.image_urls?.[0] || "",
+    });
+    setJustAdded(product.id);
+    setTimeout(() => setJustAdded(null), 1200);
   };
 
   return (
-    <div>
-      <h2>Browse Products</h2>
-      <select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-      >
-        <option value="">All Categories</option>
-        {categories.map((cat) => (
-          <option key={cat} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
+    <div className="cp">
+      <div className="dash-card cp-head">
+        <h2>Browse Products</h2>
+        <p>Find something magical for your collection.</p>
+        <CategoryBar
+          categories={categories}
+          active={selectedCategory}
+          onChange={setSelectedCategory}
+        />
+      </div>
 
-      {products.map((product) => (
-        <div key={product.id}>
-          {product.image_urls[0] && (
-            <img src={product.image_urls[0]} alt={product.name} width="80" />
-          )}
-          <strong>{product.name}</strong> — {product.category} — £
-          {product.price_gbp}
-          <button onClick={() => handleFavorite(product.id)}>♡ Favorite</button>
-        </div>
-      ))}
+      {loading && <p className="dash-card cp-note">Loading products...</p>}
+
+      {!loading && products.length === 0 && (
+        <p className="dash-card cp-note">No products in this category yet.</p>
+      )}
+
+      <div className="cp-grid">
+        {products.map((product) => {
+          const faved = favorites.includes(product.id);
+          return (
+            <article className="dash-card cp-card" key={product.id}>
+              <div className="cp-img">
+                {product.image_urls?.[0] ? (
+                  <img src={product.image_urls[0]} alt={product.name} />
+                ) : (
+                  <span>No image</span>
+                )}
+                <button
+                  className={"cp-fav" + (faved ? " on" : "")}
+                  onClick={() => handleFavorite(product.id)}
+                  aria-label="Add to favorites"
+                >
+                  {faved ? "♥" : "♡"}
+                </button>
+              </div>
+
+              <span className="cp-cat">{product.category}</span>
+              <h3>{product.name}</h3>
+              <p className="cp-price">£{product.price_gbp}</p>
+
+              <button
+                className={"cp-add" + (justAdded === product.id ? " done" : "")}
+                onClick={() => handleAdd(product)}
+              >
+                {justAdded === product.id ? "Added ✓" : "Add to Cart"}
+              </button>
+            </article>
+          );
+        })}
+      </div>
     </div>
   );
 };
