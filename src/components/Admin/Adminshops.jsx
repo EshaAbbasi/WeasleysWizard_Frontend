@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import adminService from "../../services/adminService";
+import "./AdminPages.css";
 
 const Shops = () => {
   const [shops, setShops] = useState([]);
@@ -36,22 +37,32 @@ const Shops = () => {
   };
 
   return (
-    <div>
-      <h1>Shops ({shops.length})</h1>
-      {error && <p role="alert">{error}</p>}
+    <div className="admin-page">
+      <header className="admin-page-heading">
+        <div>
+          <span className="admin-eyebrow">Platform management</span>
+          <h1>Shops</h1>
+        </div>
+        <span className="admin-count">{shops.length} shops</span>
+      </header>
+      {error && (
+        <p className="admin-error" role="alert">
+          {error}
+        </p>
+      )}
       {loading ? (
-        <p>Loading shops...</p>
+        <p className="dash-card admin-state">Loading shops...</p>
       ) : shops.length === 0 ? (
-        <p className="dash-card">No shops found.</p>
+        <p className="dash-card admin-state">No shops found.</p>
       ) : (
-        <div className="dash-card" style={{ overflowX: "auto" }}>
-          <table>
+        <div className="dash-card admin-table-wrap">
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Shop</th>
                 <th>Owner</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Approval</th>
               </tr>
             </thead>
             <tbody>
@@ -60,9 +71,10 @@ const Shops = () => {
                   shop.is_authorized ?? shop.status === "approved";
                 const owner =
                   shop.owner?.username ||
+                  shop.owner?.name ||
                   shop.owner_username ||
                   shop.owner_name ||
-                  (shop.owner_id ? `Owner #${shop.owner_id}` : "Not provided");
+                  "Owner name unavailable";
                 const status =
                   shop.status === "suspended"
                     ? "Suspended"
@@ -78,20 +90,30 @@ const Shops = () => {
                       <strong>{shop.name}</strong>
                     </td>
                     <td>{owner}</td>
-                    <td>{status}</td>
                     <td>
-                      <button
+                      <span className={`admin-status ${status.toLowerCase()}`}>
+                        {status}
+                      </span>
+                    </td>
+                    <td>
+                      <select
+                        className="admin-select"
+                        value={approved ? "approved" : "not-approved"}
                         disabled={updatingShop === shop.id}
-                        onClick={() =>
-                          handleAuthorizationChange(shop.id, !approved)
+                        aria-label={`Approval for ${shop.name}`}
+                        onChange={(event) =>
+                          handleAuthorizationChange(
+                            shop.id,
+                            event.target.value === "approved",
+                          )
                         }
                       >
-                        {updatingShop === shop.id
-                          ? "Updating..."
-                          : approved
-                            ? "Suspend"
-                            : "Approve"}
-                      </button>
+                        <option value="approved">Approved</option>
+                        <option value="not-approved">Not approved</option>
+                      </select>
+                      {updatingShop === shop.id && (
+                        <span className="admin-updating">Updating...</span>
+                      )}
                     </td>
                   </tr>
                 );

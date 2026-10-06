@@ -15,7 +15,6 @@ const EMPTY_PRODUCT = {
   price_gbp: "",
   stock: 0,
   image_urls: [],
-  is_banned_at_hogwarts: false,
 };
 
 const Products = () => {
@@ -104,7 +103,6 @@ const Products = () => {
       price_gbp: product.price_gbp,
       stock: product.stock,
       image_urls: product.image_urls || [],
-      is_banned_at_hogwarts: product.is_banned_at_hogwarts,
     });
     setEditingId(product.id);
     window.requestAnimationFrame(() => {
@@ -262,15 +260,6 @@ const Products = () => {
                 onChange={handleChange}
                 rows="4"
               />
-            </label>
-            <label className="owner-toggle">
-              <input
-                name="is_banned_at_hogwarts"
-                type="checkbox"
-                checked={form.is_banned_at_hogwarts}
-                onChange={handleChange}
-              />
-              Banned at Hogwarts
             </label>
             <label className="owner-field">
               Product images

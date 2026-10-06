@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import adminService from "../../services/adminService";
 import productService from "../../services/productService";
+import "./AdminPages.css";
+
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -39,16 +45,26 @@ const Products = () => {
   };
 
   return (
-    <div>
-      <h1>Products ({products.length})</h1>
-      {error && <p role="alert">{error}</p>}
+    <div className="admin-page">
+      <header className="admin-page-heading">
+        <div>
+          <span className="admin-eyebrow">Platform management</span>
+          <h1>Products</h1>
+        </div>
+        <span className="admin-count">{products.length} products</span>
+      </header>
+      {error && (
+        <p className="admin-error" role="alert">
+          {error}
+        </p>
+      )}
       {loading ? (
-        <p>Loading products...</p>
+        <p className="dash-card admin-state">Loading products...</p>
       ) : products.length === 0 ? (
-        <p className="dash-card">No products found.</p>
+        <p className="dash-card admin-state">No products found.</p>
       ) : (
-        <div className="dash-card" style={{ overflowX: "auto" }}>
-          <table>
+        <div className="dash-card admin-table-wrap">
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Product</th>
@@ -66,7 +82,7 @@ const Products = () => {
                     <strong>{product.name}</strong>
                   </td>
                   <td>{product.category || "-"}</td>
-                  <td>£{product.price_gbp ?? "-"}</td>
+                  <td>{currency.format(Number(product.price_gbp) || 0)}</td>
                   <td>{product.stock ?? "-"}</td>
                   <td>
                     {product.shop_name ||
@@ -74,6 +90,7 @@ const Products = () => {
                   </td>
                   <td>
                     <button
+                      className="admin-button danger"
                       disabled={deletingProduct === product.id}
                       onClick={() => handleDelete(product.id)}
                     >

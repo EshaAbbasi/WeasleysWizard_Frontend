@@ -17,7 +17,10 @@ const reviewAuthor = (review) =>
   review?.username ||
   review?.user_name ||
   review?.user?.username ||
+  review?.user?.name ||
   review?.author?.username ||
+  review?.author?.name ||
+  review?.customer?.username ||
   "";
 const addReviewAuthors = (reviews, knownReviews) => {
   const knownById = new Map(
@@ -371,9 +374,7 @@ const CustomerProductDetail = () => {
                     (String(reviewUserId(review)) ===
                     String(currentUserId(user))
                       ? user?.username || user?.name || "You"
-                      : reviewUserId(review)
-                        ? `User #${reviewUserId(review)}`
-                        : "Anonymous")}
+                      : "Customer")}
                 </strong>
                 <span aria-label={`${review.rating || 0} out of 5 stars`}>
                   {"★".repeat(
