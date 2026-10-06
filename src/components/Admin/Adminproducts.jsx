@@ -10,21 +10,34 @@ const currency = new Intl.NumberFormat("en-BH", {
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [shopNames, setShopNames] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingProduct, setDeletingProduct] = useState(null);
 
   const loadProducts = async () => {
-    try {
-      const data = await adminService.listAllProducts();
-      setProducts(Array.isArray(data) ? data : []);
-    } catch {
+    const [productsResult, shopsResult] = await Promise.allSettled([
+      adminService.listAllProducts(),
+      adminService.listAllShops(),
+    ]);
+    if (productsResult.status === "fulfilled") {
+      const data = productsResult.value;
+      setProducts(Array.isArray(data) ? data : data?.items || []);
+      setError("");
+    } else {
       setError(
         "Could not load products. Check your admin access and try again.",
       );
-    } finally {
-      setLoading(false);
     }
+    if (shopsResult.status === "fulfilled") {
+      const shops = Array.isArray(shopsResult.value)
+        ? shopsResult.value
+        : shopsResult.value?.items || [];
+      setShopNames(
+        Object.fromEntries(shops.map((shop) => [String(shop.id), shop.name])),
+      );
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -85,8 +98,11 @@ const Products = () => {
                   <td>{currency.format(Number(product.price_gbp) || 0)}</td>
                   <td>{product.stock ?? "-"}</td>
                   <td>
-                    {product.shop_name ||
-                      (product.shop_id ? `Shop #${product.shop_id}` : "-")}
+                    {product.shop?.name ||
+                      product.organization?.name ||
+                      product.shop_name ||
+                      shopNames[String(product.shop_id)] ||
+                      "Shop name unavailable"}
                   </td>
                   <td>
                     <button
