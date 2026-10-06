@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import "./Landing.css";
 
 // Each candle: horizontal position (%), vertical position (%),
@@ -34,7 +35,18 @@ const Landing = () => {
         ))}
       </div>
 
-      <div className="landing-content"></div>
+      <div className="landing-content">
+        <h1>Weasleys' Wizard Wheezes</h1>
+        <p>Magical mischief and curious creations for every occasion.</p>
+        <div className="landing-actions">
+          <Link className="landing-action landing-action-primary" to="/sign-up">
+            Create an account
+          </Link>
+          <Link className="landing-action" to="/sign-in">
+            Sign in
+          </Link>
+        </div>
+      </div>
     </main>
   );
 };

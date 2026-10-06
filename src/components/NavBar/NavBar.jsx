@@ -1,19 +1,22 @@
 import { useContext } from "react";
 import { Link } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
+import Logo from "../Logo/Logo";
 import "./NavBar.css";
 
 const NavBar = () => {
   const { user, logout } = useContext(UserContext);
+  const role = user?.role?.toLowerCase() || "guest";
 
   const handleSignOut = () => {
     logout();
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar role-${role}`}>
       <Link to="/" className="navbar-logo">
-        Weasleys' Wizard Wheezes
+        <Logo />
+        <span className="navbar-title"></span>
       </Link>
 
       <ul className="navbar-links">
@@ -21,10 +24,7 @@ const NavBar = () => {
           <>
             <li className="navbar-greeting">Hello, {user.username}</li>
             <li>
-              <Link to="/">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/" onClick={handleSignOut}>
+              <Link to="/" className="nav-btn outline" onClick={handleSignOut}>
                 Sign Out
               </Link>
             </li>
@@ -32,13 +32,14 @@ const NavBar = () => {
         ) : (
           <>
             <li>
-              <Link to="/">Dashboard</Link>
+              <Link to="/sign-up" className="nav-btn primary">
+                Sign Up
+              </Link>
             </li>
             <li>
-              <Link to="/sign-up">Sign Up</Link>
-            </li>
-            <li>
-              <Link to="/sign-in">Sign In</Link>
+              <Link to="/sign-in" className="nav-btn outline">
+                Sign In
+              </Link>
             </li>
           </>
         )}

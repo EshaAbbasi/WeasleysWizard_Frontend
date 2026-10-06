@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 
 // Components
 import NavBar from "./components/NavBar/NavBar";
@@ -10,6 +10,18 @@ import Landing from "./components/Landing/Landing";
 import CustomerDashboard from "./components/Customer/CustomerDashboard";
 import OwnerDashboard from "./components/Owner/OwnerDashboard";
 import AdminDashboard from "./components/Admin/AdminDashboard";
+import CustomerProfile from "./components/Customer/Customerprofile";
+import CustomerProducts from "./components/Customer/Customerproducts";
+import Favorites from "./components/Customer/Favorites";
+import MyOrders from "./components/Customer/Myorders";
+import OwnerProfile from "./components/Owner/Ownerprofile";
+import OwnerProducts from "./components/Owner/Ownerproducts";
+import OwnerOrders from "./components/Owner/Ownerorders";
+import SalesOverview from "./components/Owner/Salesoverview";
+import Overview from "./components/Admin/Overview";
+import AdminShops from "./components/Admin/Adminshops";
+import AdminProducts from "./components/Admin/Adminproducts";
+import AdminOrders from "./components/Admin/Adminorders";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -20,11 +32,11 @@ const App = () => {
   const home = !user ? (
     <Landing />
   ) : role === "admin" ? (
-    <AdminDashboard />
+    <Navigate to="/admin-dashboard" replace />
   ) : role === "owner" ? (
-    <OwnerDashboard />
+    <Navigate to="/owner-dashboard" replace />
   ) : role === "user" || role === "customer" ? (
-    <CustomerDashboard />
+    <Navigate to="/customer-dashboard" replace />
   ) : (
     <Dashboard />
   );
@@ -34,9 +46,27 @@ const App = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={home} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-        <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />}>
+          <Route index element={<Overview />} />
+          <Route path="overview" element={<Overview />} />
+          <Route path="shops" element={<AdminShops />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+        </Route>
+        <Route path="/customer-dashboard" element={<CustomerDashboard />}>
+          <Route index element={<CustomerProfile />} />
+          <Route path="profile" element={<CustomerProfile />} />
+          <Route path="products" element={<CustomerProducts />} />
+          <Route path="favorites" element={<Favorites />} />
+          <Route path="orders" element={<MyOrders />} />
+        </Route>
+        <Route path="/owner-dashboard" element={<OwnerDashboard />}>
+          <Route index element={<OwnerProfile />} />
+          <Route path="profile" element={<OwnerProfile />} />
+          <Route path="products" element={<OwnerProducts />} />
+          <Route path="orders" element={<OwnerOrders />} />
+          <Route path="sales" element={<SalesOverview />} />
+        </Route>
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/sign-in" element={<SignInForm />} />
       </Routes>

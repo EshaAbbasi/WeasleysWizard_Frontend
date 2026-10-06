@@ -12,7 +12,6 @@ const CustomerDashboard = () => {
         <NavLink to="/customer-dashboard/products">Products</NavLink>
         <NavLink to="/customer-dashboard/favorites">Favorites</NavLink>
         <NavLink to="/customer-dashboard/orders">My Orders</NavLink>
-        <NavLink to="/customer-dashboard/notifications">Notifications</NavLink>
         <button onClick={logout}>Log Out</button>
       </aside>
       <main className="dashboard-content">

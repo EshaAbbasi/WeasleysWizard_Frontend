@@ -1,0 +1,184 @@
+.wl-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 214, 172, 0.96);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  animation: wlFadeIn 0.4s ease forwards;
+}
+
+.wl-close {
+  animation: wlFadeOut 0.5s ease 0.7s forwards;
+}
+
+/* ---------- Owl ---------- */
+.wl-owl {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: clamp(150px, 42vw, 260px);
+  mix-blend-mode: multiply; /* hides the white background of the jfif */
+  pointer-events: none;
+}
+
+.wl-fly .wl-owl {
+  animation: owlIn 1.8s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.wl-open .wl-owl,
+.wl-close .wl-owl {
+  animation: owlOut 1.3s ease-in forwards;
+}
+
+@keyframes owlIn {
+  from {
+    transform: translate(-120vw, 25vh) rotate(-8deg);
+  }
+  60% {
+    transform: translate(-5vw, -3vh) rotate(3deg);
+  }
+  to {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+
+@keyframes owlOut {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(120vw, -45vh) scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* ---------- Envelope ---------- */
+.wl-envelope {
+  --w: min(86vw, 340px);
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 0.62);
+  margin-top: clamp(70px, 16vh, 140px);
+  perspective: 900px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.wl-open .wl-envelope,
+.wl-close .wl-envelope {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wl-envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #c9a24f;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(10, 8, 4, 0.4);
+}
+
+.wl-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #f0d48a, #d9b25f);
+  clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+}
+
+.wl-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 52%;
+  z-index: 4;
+  background: linear-gradient(180deg, #b98f3c, #d4af37);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition:
+    transform 0.6s ease 0.5s,
+    z-index 0s 0.8s;
+}
+
+.wl-open .wl-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+  transition:
+    transform 0.6s ease,
+    z-index 0s 0.3s;
+}
+
+/* ---------- Letter ---------- */
+.wl-letter {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 4%;
+  height: 92%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+  background: linear-gradient(145deg, #f8edd0, #e8d3a0);
+  border: 1px solid rgba(166, 124, 26, 0.6);
+  box-shadow: 0 4px 12px rgba(10, 8, 4, 0.3);
+  transition: transform 0.9s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+
+.wl-open .wl-letter {
+  transform: translateY(-72%);
+  transition-delay: 0.5s;
+  z-index: 5;
+}
+
+.wl-letter h2 {
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.2rem, 5vw, 1.7rem);
+  color: #1a1209;
+  margin: 0;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+.wl-name {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.3rem, 6vw, 1.9rem);
+  color: #5a3d08;
+  margin: 6px 0 0;
+  word-break: break-word;
+}
+
+@keyframes wlFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes wlFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
