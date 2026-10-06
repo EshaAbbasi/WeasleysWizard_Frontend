@@ -16,7 +16,7 @@ const NavBar = () => {
     <nav className={`navbar role-${role}`}>
       <Link to="/" className="navbar-logo">
         <Logo />
-        <span className="navbar-title"></span>
+        <span className="navbar-title">Weasleys' Wizard Wheezes</span>
       </Link>
 
       <ul className="navbar-links">

@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import "./Landing.css";
+import Footer from "../Footer/Footer";
 
 import mainImg from "../../assets/main.jfif";
 import gift from "../../assets/gift.webp";
@@ -69,7 +70,6 @@ const CANDLES = [
 const Landing = () => {
   return (
     <main className="landing">
-      {/* one image background for the whole page */}
       <div className="landing-bg" />
 
       {/* ---------- Hero ---------- */}
@@ -123,14 +123,6 @@ const Landing = () => {
               <img src={mainImg} alt="Featured wizard" />
             </div>
           </div>
-
-          <aside className="hero-side">
-            {ITEMS.map((item) => (
-              <div className="side-thumb" key={item.name}>
-                <img src={item.src} alt={item.name} />
-              </div>
-            ))}
-          </aside>
         </div>
       </section>
 
@@ -192,9 +184,7 @@ const Landing = () => {
         </div>
       </section>
 
-      <footer className="landing-footer">
-        © 2026 Weasleys' Wizard Wheezes
-      </footer>
+      <Footer />
     </main>
   );
 };

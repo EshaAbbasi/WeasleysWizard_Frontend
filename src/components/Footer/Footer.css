@@ -1,0 +1,67 @@
+.site-footer {
+  position: relative;
+  z-index: 1;
+  background: #120c06;
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 2rem clamp(16px, 5vw, 64px);
+}
+
+.site-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem 2rem;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #f5ecd9;
+}
+
+.site-footer .w-logo {
+  color: #f5ecd9;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-family: "Lato", sans-serif;
+  font-size: 0.9rem;
+  color: #f5ecd9;
+  text-decoration: none;
+  opacity: 0.85;
+  transition:
+    color 0.2s,
+    opacity 0.2s;
+}
+
+.footer-links a:hover {
+  color: #e3b84a;
+  opacity: 1;
+}
+
+.footer-copy {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+  font-size: 0.8rem;
+  color: rgba(245, 236, 217, 0.7);
+}
+
+@media (max-width: 640px) {
+  .site-footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
