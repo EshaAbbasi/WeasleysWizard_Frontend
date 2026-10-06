@@ -52,6 +52,10 @@
   padding: clamp(14px, 2vw, 22px);
 }
 
+.owner-product-editor {
+  scroll-margin-top: 112px;
+}
+
 .owner-panel-title,
 .owner-section-title {
   display: flex;

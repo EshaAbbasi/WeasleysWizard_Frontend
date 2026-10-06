@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import productService from "../../services/productService";
 import uploadService, { resolveImageUrl } from "../../services/uploadService";
 import "./OwnerWorkspace.css";
@@ -25,6 +25,7 @@ const Products = () => {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const editorRef = useRef(null);
 
   useEffect(() => {
     productService
@@ -106,6 +107,9 @@ const Products = () => {
       is_banned_at_hogwarts: product.is_banned_at_hogwarts,
     });
     setEditingId(product.id);
+    window.requestAnimationFrame(() => {
+      editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
 
   const handleDelete = async (id) => {
@@ -135,7 +139,68 @@ const Products = () => {
         </p>
       )}
 
-      <section className="dash-card owner-panel">
+      <section className="owner-page owner-products-section">
+        <div className="owner-section-title">
+          <h2>My products</h2>
+          <span className="owner-eyebrow">{products.length} listed</span>
+        </div>
+        {loading ? (
+          <p className="dash-card owner-empty">Loading products...</p>
+        ) : products.length === 0 ? (
+          <p className="dash-card owner-empty">No products listed yet.</p>
+        ) : (
+          <div className="owner-products-grid">
+            {products.map((product) => (
+              <article
+                className="dash-card owner-product-card"
+                key={product.id}
+              >
+                <div className="owner-product-image">
+                  {product.image_urls?.[0] ? (
+                    <img
+                      src={resolveImageUrl(product.image_urls[0])}
+                      alt={product.name}
+                    />
+                  ) : (
+                    <span>No image</span>
+                  )}
+                </div>
+                <div className="owner-product-body">
+                  <h3>{product.name}</h3>
+                  <div className="owner-product-meta">
+                    <span>{product.category}</span>
+                    <span>
+                      {currency.format(Number(product.price_gbp) || 0)}
+                    </span>
+                    <span>{product.stock} in stock</span>
+                  </div>
+                  <div className="owner-product-actions">
+                    <button
+                      className="owner-secondary-button"
+                      type="button"
+                      onClick={() => handleEdit(product)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="owner-danger-button"
+                      type="button"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section
+        ref={editorRef}
+        className="dash-card owner-panel owner-product-editor"
+      >
         <div className="owner-panel-title">
           <h2>{editingId ? "Edit product" : "Add a product"}</h2>
         </div>
@@ -250,64 +315,6 @@ const Products = () => {
             )}
           </div>
         </form>
-      </section>
-
-      <section className="owner-page">
-        <div className="owner-section-title">
-          <h2>My products</h2>
-          <span className="owner-eyebrow">{products.length} listed</span>
-        </div>
-        {loading ? (
-          <p className="dash-card owner-empty">Loading products...</p>
-        ) : products.length === 0 ? (
-          <p className="dash-card owner-empty">No products listed yet.</p>
-        ) : (
-          <div className="owner-products-grid">
-            {products.map((product) => (
-              <article
-                className="dash-card owner-product-card"
-                key={product.id}
-              >
-                <div className="owner-product-image">
-                  {product.image_urls?.[0] ? (
-                    <img
-                      src={resolveImageUrl(product.image_urls[0])}
-                      alt={product.name}
-                    />
-                  ) : (
-                    <span>No image</span>
-                  )}
-                </div>
-                <div className="owner-product-body">
-                  <h3>{product.name}</h3>
-                  <div className="owner-product-meta">
-                    <span>{product.category}</span>
-                    <span>
-                      {currency.format(Number(product.price_gbp) || 0)}
-                    </span>
-                    <span>{product.stock} in stock</span>
-                  </div>
-                  <div className="owner-product-actions">
-                    <button
-                      className="owner-secondary-button"
-                      type="button"
-                      onClick={() => handleEdit(product)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="owner-danger-button"
-                      type="button"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
       </section>
     </div>
   );
