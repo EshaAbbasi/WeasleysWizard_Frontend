@@ -9,44 +9,26 @@ const currency = new Intl.NumberFormat("en-BH", {
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
-  const [customerNames, setCustomerNames] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
-    Promise.allSettled([
-      adminService.listAllOrders(),
-      adminService.listAllReviews(),
-    ]).then(([ordersResult, reviewsResult]) => {
-      if (!mounted) return;
-      if (ordersResult.status === "fulfilled") {
-        const data = ordersResult.value;
-        setOrders(Array.isArray(data) ? data : data?.items || []);
-      } else {
-        setError(
-          "Could not load orders. Check your admin access and try again.",
-        );
-      }
-      if (reviewsResult.status === "fulfilled") {
-        const data = reviewsResult.value;
-        const reviews = Array.isArray(data) ? data : data?.items || [];
-        const names = {};
-        reviews.forEach((review) => {
-          const userId = review.user_id ?? review.customer_id;
-          const username =
-            review.username ||
-            review.user_name ||
-            review.user?.username ||
-            review.user?.name ||
-            review.author?.username ||
-            review.customer?.username;
-          if (userId != null && username) names[String(userId)] = username;
-        });
-        setCustomerNames(names);
-      }
-      setLoading(false);
-    });
+    adminService
+      .listAllOrders()
+      .then((data) => {
+        if (mounted) setOrders(Array.isArray(data) ? data : data?.items || []);
+      })
+      .catch(() => {
+        if (mounted) {
+          setError(
+            "Could not load orders. Check your admin access and try again.",
+          );
+        }
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
     return () => {
       mounted = false;
     };
@@ -76,7 +58,6 @@ const Orders = () => {
             <thead>
               <tr>
                 <th>Order</th>
-                <th>Customer</th>
                 <th>Total</th>
                 <th>Status</th>
                 <th>Payment</th>
@@ -86,16 +67,6 @@ const Orders = () => {
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td>#{order.id}</td>
-                  <td>
-                    {order.username ||
-                      order.customer_name ||
-                      order.customer?.username ||
-                      order.customer?.name ||
-                      order.user?.username ||
-                      order.user?.name ||
-                      customerNames[String(order.user_id)] ||
-                      "Customer name unavailable"}
-                  </td>
                   <td>{currency.format(Number(order.total_gbp) || 0)}</td>
                   <td>{order.status || "-"}</td>
                   <td>{order.payment_method || "-"}</td>
