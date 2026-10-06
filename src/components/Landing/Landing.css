@@ -170,12 +170,11 @@
 
 .hero-arch {
   width: min(100%, 440px);
-  max-height: 74vh;
-  aspect-ratio: 4 / 5;
+  height: min(74vh, 560px);
   isolation: isolate;
   overflow: hidden;
   border-radius: 999px 999px 18px 18px;
-  background: linear-gradient(180deg, #f1e3c0, #d6bd86);
+  background: #120c06; /* dark, so nothing light can show at the edges */
   box-shadow:
     0 24px 50px rgba(0, 0, 0, 0.6),
     0 0 40px rgba(212, 175, 55, 0.3);
@@ -185,9 +184,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center bottom;
-  mix-blend-mode: multiply;
+  object-fit: cover; /* fills the whole arch */
+  object-position: center;
 }
 
 /* ---------- Generic sections ---------- */
