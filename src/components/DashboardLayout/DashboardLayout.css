@@ -1,0 +1,126 @@
+.dash-page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: clamp(76px, 11vh, 92px) clamp(12px, 3vw, 40px) 32px;
+  background: url("../../assets/map.jfif") center / cover fixed no-repeat;
+  color: #1a1209;
+  font-family: "Lato", sans-serif;
+}
+
+/* dark fade at the top so the global navbar stays readable on the light map */
+.dash-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(8, 6, 3, 0.7), rgba(8, 6, 3, 0) 140px),
+    rgba(40, 25, 8, 0.18);
+}
+
+.dash-shell {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ---------- Top pill navigation ---------- */
+.dash-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dash-pill {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-radius: 999px;
+  background: rgba(251, 246, 234, 0.92);
+  border: 1px solid rgba(166, 124, 26, 0.45);
+  box-shadow: 0 6px 20px rgba(40, 25, 8, 0.3);
+}
+
+.dash-pill::-webkit-scrollbar {
+  display: none;
+}
+
+.dash-link {
+  flex-shrink: 0;
+  padding: 9px clamp(12px, 2vw, 22px);
+  border-radius: 999px;
+  text-decoration: none;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: #2b1d08;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.dash-link:hover {
+  background: rgba(166, 124, 26, 0.18);
+}
+
+.dash-link.active {
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.dash-logout {
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: #f5ecd9;
+  background: rgba(26, 18, 9, 0.85);
+  border: 1px solid #b8960c;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.dash-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- Shared card + page styles (used by every dashboard page) ---------- */
+.dash-content h1,
+.dash-content h2,
+.dash-content h3 {
+  font-family: "Playfair Display", "Cinzel", serif;
+  color: #1a1209;
+  margin: 0;
+}
+
+.dash-card {
+  box-sizing: border-box;
+  padding: clamp(14px, 2vw, 22px);
+  border-radius: 20px;
+  background: rgba(251, 246, 234, 0.9);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(166, 124, 26, 0.35);
+  box-shadow: 0 8px 24px rgba(40, 25, 8, 0.28);
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .dash-logout {
+    padding: 9px 14px;
+  }
+}
