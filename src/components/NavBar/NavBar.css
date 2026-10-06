@@ -79,14 +79,15 @@
 }
 
 .nav-btn.primary {
-  color: #1a1209;
-  background: linear-gradient(135deg, #f6dd8a, #d4af37 55%, #a67c1a);
-  box-shadow: 0 4px 14px rgba(120, 85, 10, 0.55);
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  border: 2px solid #b8960c;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
 }
 
 .nav-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.9);
+  box-shadow: 0 6px 20px rgba(141, 0, 0, 0.7);
 }
 
 .nav-btn.outline {
