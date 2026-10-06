@@ -428,6 +428,26 @@
   font-weight: 700;
 }
 
+.cp-review-comment {
+  display: grid;
+  width: min(560px, 100%);
+  gap: 8px;
+  font-weight: 700;
+}
+
+.cp-review-comment textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 110px;
+  padding: 10px 12px;
+  border: 1px solid #cdbd9b;
+  border-radius: 5px;
+  color: #1a1209;
+  background: #fffdf8;
+  font: inherit;
+  resize: vertical;
+}
+
 .cp-rating-picker {
   display: flex;
   gap: 4px;

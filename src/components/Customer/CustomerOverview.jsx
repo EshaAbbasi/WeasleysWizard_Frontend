@@ -6,9 +6,9 @@ import "../OwnerDashboard/OwnerOverview.css";
 import "./CustomerOverview.css";
 
 const asList = (data) => (Array.isArray(data) ? data : data?.items || []);
-const currency = new Intl.NumberFormat("en-GB", {
+const currency = new Intl.NumberFormat("en-BH", {
   style: "currency",
-  currency: "GBP",
+  currency: "BHD",
 });
 const STATUS_GROUPS = ["Delivered", "In transit", "Processing"];
 

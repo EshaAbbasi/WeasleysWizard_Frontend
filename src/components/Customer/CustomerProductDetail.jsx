@@ -4,7 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useCart } from "../../contexts/CartContext";
 import customerService from "../../services/customerService";
 import productService from "../../services/productService";
-import uploadService from "../../services/uploadService";
+import uploadService, { resolveImageUrl } from "../../services/uploadService";
 import "./CustomerProducts.css";
 
 const asList = (data) => (Array.isArray(data) ? data : data?.items || []);
@@ -12,6 +12,10 @@ const currentUserId = (user) => user?.id ?? user?.user_id;
 const reviewUserId = (review) => review?.user_id ?? review?.customer_id;
 const reviewImage = (review) =>
   review?.image_url || review?.image_urls?.[0] || "";
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
 
 const CustomerProductDetail = () => {
   const { productId } = useParams();
@@ -22,6 +26,7 @@ const CustomerProductDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [activeImage, setActiveImage] = useState("");
   const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -62,6 +67,7 @@ const CustomerProductDetail = () => {
     setEditingReview(ownReview || null);
     setFormOpen(true);
     setRating(Number(ownReview?.rating) || 0);
+    setComment(ownReview?.comment || "");
     setImageFile(null);
     setNotice("");
     setError("");
@@ -71,6 +77,7 @@ const CustomerProductDetail = () => {
     setEditingReview(null);
     setFormOpen(false);
     setRating(0);
+    setComment("");
     setImageFile(null);
   };
 
@@ -82,17 +89,17 @@ const CustomerProductDetail = () => {
       setError("Choose a rating from 1 to 5 stars.");
       return;
     }
-    if (!imageFile && !reviewImage(editingReview)) {
-      setError("Upload an image to submit your review.");
+    if (!comment.trim()) {
+      setError("Write a review before submitting.");
       return;
     }
-
     setSaving(true);
     try {
       const imageUrl = imageFile
         ? await uploadService.uploadImage(imageFile)
         : reviewImage(editingReview);
-      const payload = { rating, image_url: imageUrl };
+      const payload = { rating, comment: comment.trim() };
+      if (imageUrl) payload.image_url = imageUrl;
       if (editingReview) {
         await customerService.updateReview(editingReview.id, payload);
         setNotice("Your review has been updated.");
@@ -120,7 +127,7 @@ const CustomerProductDetail = () => {
       id: product.id,
       name: product.name,
       price_gbp: product.price_gbp,
-      image: product.image_urls?.[0] || "",
+      image: resolveImageUrl(product.image_urls?.[0]),
       stock: product.stock,
     });
     if (!result.ok) setError(result.message);
@@ -172,7 +179,7 @@ const CustomerProductDetail = () => {
           <div>
             <div className="cp-detail-image">
               {activeImage ? (
-                <img src={activeImage} alt={product.name} />
+                <img src={resolveImageUrl(activeImage)} alt={product.name} />
               ) : (
                 <span>No image available</span>
               )}
@@ -185,7 +192,7 @@ const CustomerProductDetail = () => {
                   onClick={() => setActiveImage(image)}
                   aria-label={`Show product image ${index + 1}`}
                 >
-                  <img src={image} alt="" />
+                  <img src={resolveImageUrl(image)} alt="" />
                 </button>
               ))}
             </div>
@@ -194,13 +201,15 @@ const CustomerProductDetail = () => {
           <div className="cp-detail-copy">
             <span className="cp-cat">{product.category}</span>
             <h1>{product.name}</h1>
-            <p className="cp-price">£{product.price_gbp}</p>
+            <p className="cp-price">
+              {currency.format(Number(product.price_gbp) || 0)}
+            </p>
             <p className="cp-description">
               {product.description || "No description provided."}
             </p>
             <div className="cp-seller">
               {logo ? (
-                <img src={logo} alt={`${shopName} logo`} />
+                <img src={resolveImageUrl(logo)} alt={`${shopName} logo`} />
               ) : (
                 <span className="cp-seller-placeholder" aria-hidden="true">
                   {shopName.slice(0, 1).toUpperCase()}
@@ -252,21 +261,30 @@ const CustomerProductDetail = () => {
                 ))}
               </div>
             </fieldset>
+            <label className="cp-review-comment">
+              Your review
+              <textarea
+                value={comment}
+                onChange={(event) => setComment(event.target.value)}
+                placeholder="Share what you think about this product"
+                required
+                rows={4}
+              />
+            </label>
             <label className="cp-image-upload">
-              Review image
+              Review image (optional)
               <input
                 type="file"
                 accept="image/*"
                 onChange={(event) =>
                   setImageFile(event.target.files?.[0] || null)
                 }
-                required={!reviewImage(editingReview)}
               />
             </label>
             {editingReview && reviewImage(editingReview) && !imageFile && (
               <img
                 className="cp-review-image-preview"
-                src={reviewImage(editingReview)}
+                src={resolveImageUrl(reviewImage(editingReview))}
                 alt="Current review"
               />
             )}
@@ -299,7 +317,14 @@ const CustomerProductDetail = () => {
             <article className="cp-review" key={review.id}>
               <div className="cp-review-heading">
                 <strong>
-                  {review.username || review.user_name || "Customer"}
+                  {review.username ||
+                    review.user_name ||
+                    (String(reviewUserId(review)) ===
+                    String(currentUserId(user))
+                      ? user?.username || user?.name || "You"
+                      : reviewUserId(review)
+                        ? `User #${reviewUserId(review)}`
+                        : "Anonymous")}
                 </strong>
                 <span aria-label={`${review.rating || 0} out of 5 stars`}>
                   {"★".repeat(
@@ -310,10 +335,11 @@ const CustomerProductDetail = () => {
                   )}
                 </span>
               </div>
+              {review.comment && <p>{review.comment}</p>}
               {reviewImage(review) && (
                 <img
                   className="cp-review-image"
-                  src={reviewImage(review)}
+                  src={resolveImageUrl(reviewImage(review))}
                   alt={`Review from ${review.username || review.user_name || "customer"}`}
                 />
               )}

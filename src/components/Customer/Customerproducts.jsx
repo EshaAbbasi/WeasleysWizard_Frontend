@@ -3,8 +3,14 @@ import { useNavigate } from "react-router";
 import customerService from "../../services/customerService";
 import productService from "../../services/productService";
 import { useCart } from "../../contexts/CartContext";
+import { resolveImageUrl } from "../../services/uploadService";
 import CategoryBar from "./CategoryBar";
 import "./CustomerProducts.css";
+
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
 
 const Products = () => {
   const { addToCart } = useCart();
@@ -47,7 +53,7 @@ const Products = () => {
       id: product.id,
       name: product.name,
       price_gbp: product.price_gbp,
-      image: product.image_urls?.[0] || "",
+      image: resolveImageUrl(product.image_urls?.[0]),
       stock: product.stock,
     });
     if (!result.ok) {
@@ -96,7 +102,10 @@ const Products = () => {
                   aria-label={`View ${product.name} details`}
                 >
                   {product.image_urls?.[0] ? (
-                    <img src={product.image_urls[0]} alt={product.name} />
+                    <img
+                      src={resolveImageUrl(product.image_urls[0])}
+                      alt={product.name}
+                    />
                   ) : (
                     <span>No image</span>
                   )}
@@ -121,7 +130,9 @@ const Products = () => {
                   {product.name}
                 </button>
               </h3>
-              <p className="cp-price">£{product.price_gbp}</p>
+              <p className="cp-price">
+                {currency.format(Number(product.price_gbp) || 0)}
+              </p>
 
               <button
                 className={"cp-add" + (justAdded === product.id ? " done" : "")}

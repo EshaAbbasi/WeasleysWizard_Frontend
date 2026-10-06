@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import customerService from "../../services/customerService";
 
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
+
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
 
@@ -17,7 +22,8 @@ const MyOrders = () => {
       {orders.map((order) => (
         <div key={order.id}>
           <p>
-            Order #{order.id} — £{order.total_gbp} — {order.status}
+            Order #{order.id} — {currency.format(Number(order.total_gbp) || 0)}{" "}
+            — {order.status}
           </p>
           <ul>
             {order.items.map((item) => (

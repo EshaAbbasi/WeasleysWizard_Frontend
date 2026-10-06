@@ -180,3 +180,151 @@
     transform: scale(1);
   }
 }
+
+.cart-backdrop {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(20, 14, 8, 0.62);
+}
+
+.cart-drawer {
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 100%);
+  height: 100%;
+  box-sizing: border-box;
+  padding: 22px;
+  color: #1a1209;
+  background: #fffaf0;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+}
+
+.cart-drawer-head,
+.cart-drawer-head > div,
+.cart-drawer-foot > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-drawer-head h2 {
+  margin: 0;
+  font-family: "Playfair Display", "Cinzel", serif;
+}
+
+.cart-drawer-head span {
+  color: #625541;
+}
+
+.cart-close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d8c7a0;
+  border-radius: 50%;
+  color: #2b1d08;
+  background: transparent;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.cart-empty {
+  margin: auto 0;
+  text-align: center;
+  color: #625541;
+}
+
+.cart-lines {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2d7c2;
+}
+
+.cart-line > img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 5px;
+  background: #eee6d7;
+}
+
+.cart-line-info {
+  display: grid;
+  gap: 6px;
+}
+
+.cart-line-info > span {
+  color: #7a1212;
+  font-weight: 700;
+}
+
+.cart-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cart-quantity button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d8c7a0;
+  border-radius: 4px;
+  color: #2b1d08;
+  background: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.cart-quantity button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.cart-remove {
+  padding: 4px 0;
+  border: 0;
+  color: #7a1212;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cart-drawer-foot {
+  display: grid;
+  gap: 18px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid #d8c7a0;
+}
+
+.cart-continue {
+  display: block;
+  padding: 12px;
+  color: #fffaf0;
+  background: #7a1212;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .cart-drawer {
+    padding: 16px;
+  }
+}

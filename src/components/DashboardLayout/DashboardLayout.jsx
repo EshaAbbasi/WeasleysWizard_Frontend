@@ -1,13 +1,33 @@
-import { useContext } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import { useCart } from "../../contexts/CartContext";
+import { resolveImageUrl } from "../../services/uploadService";
 import "./DashboardLayout.css";
+
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
 
 const DashboardLayout = ({ links, showCart = false }) => {
   const { logout } = useContext(UserContext);
-  const { count } = useCart();
+  const { items, count, setQty, removeFromCart } = useCart();
   const navigate = useNavigate();
+  const [cartOpen, setCartOpen] = useState(false);
+  const total = items.reduce(
+    (sum, item) => sum + (Number(item.price_gbp) || 0) * item.qty,
+    0,
+  );
+
+  useEffect(() => {
+    if (!cartOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setCartOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [cartOpen]);
 
   const handleLogout = () => {
     logout();
@@ -35,7 +55,12 @@ const DashboardLayout = ({ links, showCart = false }) => {
 
           <div className="dash-actions">
             {showCart && (
-              <button className="dash-cart" aria-label={`Cart, ${count} items`}>
+              <button
+                className="dash-cart"
+                aria-label={`Cart, ${count} items`}
+                aria-expanded={cartOpen}
+                onClick={() => setCartOpen(true)}
+              >
                 <svg
                   viewBox="0 0 24 24"
                   width="22"
@@ -63,6 +88,94 @@ const DashboardLayout = ({ links, showCart = false }) => {
           <Outlet />
         </main>
       </div>
+      {cartOpen && (
+        <div
+          className="cart-backdrop"
+          onClick={() => setCartOpen(false)}
+          role="presentation"
+        >
+          <aside
+            className="cart-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="cart-drawer-head">
+              <div>
+                <h2 id="cart-title">Your Cart</h2>
+                <span>
+                  {count} {count === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <button
+                className="cart-close"
+                onClick={() => setCartOpen(false)}
+                aria-label="Close cart"
+              >
+                ×
+              </button>
+            </header>
+            {items.length === 0 ? (
+              <p className="cart-empty">Your cart is empty.</p>
+            ) : (
+              <>
+                <ul className="cart-lines">
+                  {items.map((item) => (
+                    <li className="cart-line" key={item.id}>
+                      {item.image && (
+                        <img src={resolveImageUrl(item.image)} alt="" />
+                      )}
+                      <div className="cart-line-info">
+                        <strong>{item.name}</strong>
+                        <span>
+                          {currency.format(Number(item.price_gbp) || 0)}
+                        </span>
+                        <div className="cart-quantity">
+                          <button
+                            aria-label={`Decrease ${item.name} quantity`}
+                            onClick={() => setQty(item.id, item.qty - 1)}
+                          >
+                            −
+                          </button>
+                          <span>{item.qty}</span>
+                          <button
+                            aria-label={`Increase ${item.name} quantity`}
+                            disabled={item.qty >= item.stock}
+                            onClick={() => setQty(item.id, item.qty + 1)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        className="cart-remove"
+                        onClick={() => removeFromCart(item.id)}
+                        aria-label={`Remove ${item.name} from cart`}
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <footer className="cart-drawer-foot">
+                  <div>
+                    <strong>Subtotal</strong>
+                    <strong>{currency.format(total)}</strong>
+                  </div>
+                  <Link
+                    to="/customer-dashboard/products"
+                    className="cart-continue"
+                    onClick={() => setCartOpen(false)}
+                  >
+                    Continue shopping
+                  </Link>
+                </footer>
+              </>
+            )}
+          </aside>
+        </div>
+      )}
     </div>
   );
 };
