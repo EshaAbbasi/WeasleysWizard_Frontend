@@ -139,7 +139,12 @@ const DashboardLayout = ({ links, showCart = false }) => {
               </div>
               <button
                 className="cart-close"
-                onClick={() => setCartOpen(false)}
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setCartOpen(false);
+                }}
                 aria-label="Close cart"
               >
                 ×

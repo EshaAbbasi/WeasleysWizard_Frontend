@@ -17,6 +17,7 @@ import CustomerProductDetail from "./components/Customer/CustomerProductDetail";
 import Favorites from "./components/Customer/Favorites";
 import MyOrders from "./components/Customer/Myorders";
 import OwnerProfile from "./components/Owner/Ownerprofile";
+import OwnerOverview from "./components/OwnerDashboard/OwnerOverview";
 import OwnerProducts from "./components/Owner/Ownerproducts";
 import OwnerOrders from "./components/Owner/Ownerorders";
 import SalesOverview from "./components/Owner/Salesoverview";
@@ -71,7 +72,7 @@ const App = () => {
           <Route path="orders" element={<MyOrders />} />
         </Route>
         <Route path="/owner-dashboard" element={<OwnerDashboard />}>
-          <Route index element={<OwnerProfile />} />
+          <Route index element={<OwnerOverview />} />
           <Route path="profile" element={<OwnerProfile />} />
           <Route path="products" element={<OwnerProducts />} />
           <Route path="orders" element={<OwnerOrders />} />
