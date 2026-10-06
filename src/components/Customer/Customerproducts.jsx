@@ -62,6 +62,7 @@ const Products = () => {
           ? current.filter((id) => id !== favoriteId)
           : [...current, favoriteId],
       );
+      window.dispatchEvent(new Event("favorites:updated"));
     } catch {
       setAddError("Could not update favorites. Please try again.");
     } finally {

@@ -19,6 +19,14 @@ const getStatusGroup = (status = "") => {
   return "Processing";
 };
 
+const getOrderDate = (order) =>
+  order.created_at ||
+  order.createdAt ||
+  order.created_on ||
+  order.order_date ||
+  order.ordered_at ||
+  order.date;
+
 const greeting = () => {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -56,10 +64,12 @@ const CustomerOverview = () => {
     refresh();
     const interval = window.setInterval(refresh, 30000);
     window.addEventListener("orders:updated", refresh);
+    window.addEventListener("favorites:updated", refresh);
     return () => {
       mounted = false;
       window.clearInterval(interval);
       window.removeEventListener("orders:updated", refresh);
+      window.removeEventListener("favorites:updated", refresh);
     };
   }, []);
 
@@ -100,17 +110,35 @@ const CustomerOverview = () => {
       total: 0,
     };
   });
-  orders.forEach((order) => {
-    const date = new Date(order.created_at || order.date || "");
-    const month = months.find(
-      (item) =>
-        item.year === date.getFullYear() && item.month === date.getMonth(),
-    );
-    if (month && !Number.isNaN(date.getTime())) {
-      month.total += Number(order.total_gbp) || 0;
-    }
-  });
-  const maxSpend = Math.max(...months.map((month) => month.total), 1);
+  const datedOrders = orders.map((order) => ({
+    order,
+    date: new Date(getOrderDate(order) || ""),
+  }));
+  const hasCompleteDates =
+    orders.length > 0 &&
+    datedOrders.every(({ date }) => !Number.isNaN(date.getTime()));
+  if (hasCompleteDates) {
+    datedOrders.forEach(({ order, date }) => {
+      const month = months.find(
+        (item) =>
+          item.year === date.getFullYear() && item.month === date.getMonth(),
+      );
+      if (month) {
+        month.total += Number(order.total_gbp) || 0;
+      }
+    });
+  }
+  const orderSpending = [...orders]
+    .sort((left, right) => Number(left.id) - Number(right.id))
+    .slice(-12)
+    .map((order) => ({
+      label: `#${order.id}`,
+      total: Number(order.total_gbp) || 0,
+    }));
+  const chartData = hasCompleteDates
+    ? months.map((month) => ({ label: month.label, total: month.total }))
+    : orderSpending;
+  const maxSpend = Math.max(...chartData.map((item) => item.total), 1);
   const statuses = STATUS_GROUPS.map((label) => {
     const count = orders.filter(
       (order) => getStatusGroup(order.status) === label,
@@ -124,8 +152,8 @@ const CustomerOverview = () => {
   const recentOrders = [...orders]
     .sort(
       (left, right) =>
-        new Date(right.created_at || right.date || 0) -
-        new Date(left.created_at || left.date || 0),
+        (new Date(getOrderDate(right) || 0).getTime() || Number(right.id)) -
+        (new Date(getOrderDate(left) || 0).getTime() || Number(left.id)),
     )
     .slice(0, 4);
 
@@ -154,23 +182,27 @@ const CustomerOverview = () => {
         <section className="dash-card ov-chart">
           <div className="ov-head">
             <h2>My spending</h2>
-            <span className="ov-chip">Last 12 months</span>
+            <span className="ov-chip">
+              {hasCompleteDates ? "Last 12 months" : "By order"}
+            </span>
           </div>
           <p className="ov-big">
             {loading ? "..." : currency.format(totalSpent)}
           </p>
 
           <div className="ov-bars">
-            {months.map((month, index) => (
-              <div className="ov-col" key={`${month.year}-${month.month}`}>
+            {chartData.map((item, index) => (
+              <div className="ov-col" key={`${item.label}-${index}`}>
                 <div
-                  className={"ov-bar" + (index === 11 ? " on" : "")}
+                  className={
+                    "ov-bar" + (index === chartData.length - 1 ? " on" : "")
+                  }
                   style={{
-                    height: `${Math.max((month.total / maxSpend) * 100, month.total ? 8 : 0)}%`,
+                    height: `${Math.max((item.total / maxSpend) * 100, item.total ? 8 : 0)}%`,
                   }}
-                  title={`${month.label} ${month.year}: ${currency.format(month.total)}`}
+                  title={`${item.label}: ${currency.format(item.total)}`}
                 />
-                <span>{month.label}</span>
+                <span>{item.label}</span>
               </div>
             ))}
           </div>
@@ -200,18 +232,26 @@ const CustomerOverview = () => {
               {recentOrders.map((order) => (
                 <li key={order.id}>
                   <span className="ov-avatar">
-                    {(order.items?.[0]?.name || `#${order.id}`)[0]}
+                    {
+                      (order.items?.[0]?.product?.name ||
+                        order.items?.[0]?.product_name ||
+                        order.items?.[0]?.name ||
+                        `#${order.id}`)[0]
+                    }
                   </span>
                   <div>
                     <strong>
-                      {order.items?.[0]?.name || `Order #${order.id}`}
+                      {order.items?.[0]?.product?.name ||
+                        order.items?.[0]?.product_name ||
+                        order.items?.[0]?.name ||
+                        `Order #${order.id}`}
                     </strong>
                     <small>
-                      {order.created_at || order.date
-                        ? new Date(
-                            order.created_at || order.date,
-                          ).toLocaleDateString("en-GB")
-                        : "Date unavailable"}
+                      {getOrderDate(order)
+                        ? new Date(getOrderDate(order)).toLocaleDateString(
+                            "en-GB",
+                          )
+                        : `Order #${order.id} · ${currency.format(Number(order.total_gbp) || 0)}`}
                     </small>
                   </div>
                   <span
