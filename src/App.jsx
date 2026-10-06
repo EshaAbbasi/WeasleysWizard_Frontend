@@ -10,6 +10,7 @@ import Landing from "./components/Landing/Landing";
 import CustomerDashboard from "./components/Customer/CustomerDashboard";
 import OwnerDashboard from "./components/Owner/OwnerDashboard";
 import AdminDashboard from "./components/Admin/AdminDashboard";
+import CustomerOverview from "./components/Customer/CustomerOverview"; // NEW
 import CustomerProfile from "./components/Customer/Customerprofile";
 import CustomerProducts from "./components/Customer/Customerproducts";
 import Favorites from "./components/Customer/Favorites";
@@ -46,6 +47,8 @@ const App = () => {
       <NavBar />
       <Routes>
         <Route path="/" element={home} />
+        <Route path="/home" element={<Landing />} />{" "}
+        {/* NEW: landing for everyone */}
         <Route path="/admin-dashboard" element={<AdminDashboard />}>
           <Route index element={<Overview />} />
           <Route path="overview" element={<Overview />} />
@@ -54,7 +57,7 @@ const App = () => {
           <Route path="orders" element={<AdminOrders />} />
         </Route>
         <Route path="/customer-dashboard" element={<CustomerDashboard />}>
-          <Route index element={<CustomerProfile />} />
+          <Route index element={<CustomerOverview />} /> {/* CHANGED */}
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="products" element={<CustomerProducts />} />
           <Route path="favorites" element={<Favorites />} />
