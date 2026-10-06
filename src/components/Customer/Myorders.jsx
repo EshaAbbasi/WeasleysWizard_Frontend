@@ -10,10 +10,26 @@ const MyOrders = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    customerService
-      .getMyOrders()
-      .then(setOrders)
-      .catch(() => setOrders([]));
+    let mounted = true;
+    const refresh = () => {
+      customerService
+        .getMyOrders()
+        .then((data) => {
+          if (mounted)
+            setOrders(Array.isArray(data) ? data : data?.items || []);
+        })
+        .catch(() => {
+          if (mounted) setOrders([]);
+        });
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 30000);
+    window.addEventListener("orders:updated", refresh);
+    return () => {
+      mounted = false;
+      window.clearInterval(interval);
+      window.removeEventListener("orders:updated", refresh);
+    };
   }, []);
 
   return (
@@ -26,7 +42,7 @@ const MyOrders = () => {
             — {order.status}
           </p>
           <ul>
-            {order.items.map((item) => (
+            {(order.items || []).map((item) => (
               <li key={item.id}>
                 Product #{item.product_id} × {item.quantity}
               </li>

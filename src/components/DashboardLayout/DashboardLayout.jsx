@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import { useCart } from "../../contexts/CartContext";
+import customerService from "../../services/customerService";
 import { resolveImageUrl } from "../../services/uploadService";
 import "./DashboardLayout.css";
 
@@ -12,9 +13,12 @@ const currency = new Intl.NumberFormat("en-BH", {
 
 const DashboardLayout = ({ links, showCart = false }) => {
   const { logout } = useContext(UserContext);
-  const { items, count, setQty, removeFromCart } = useCart();
+  const { items, count, setQty, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [checkoutNotice, setCheckoutNotice] = useState("");
   const total = items.reduce(
     (sum, item) => sum + (Number(item.price_gbp) || 0) * item.qty,
     0,
@@ -32,6 +36,31 @@ const DashboardLayout = ({ links, showCart = false }) => {
   const handleLogout = () => {
     logout();
     navigate("/", { replace: true }); // user is empty now, so "/" shows the landing page
+  };
+
+  const handleCheckout = async () => {
+    setCheckoutBusy(true);
+    setCheckoutError("");
+    setCheckoutNotice("");
+    try {
+      await customerService.checkout({
+        items: items.map((item) => ({
+          product_id: item.id,
+          quantity: item.qty,
+        })),
+        payment_method: "Card",
+      });
+      clearCart();
+      setCheckoutNotice("Order confirmed. Payment method: Card.");
+      window.dispatchEvent(new Event("orders:updated"));
+    } catch (error) {
+      setCheckoutError(
+        error.response?.data?.detail ||
+          "Could not confirm your order. Your cart has been kept.",
+      );
+    } finally {
+      setCheckoutBusy(false);
+    }
   };
 
   return (
@@ -116,6 +145,17 @@ const DashboardLayout = ({ links, showCart = false }) => {
                 ×
               </button>
             </header>
+            {checkoutNotice && (
+              <div className="cart-checkout-notice" role="status">
+                <span>{checkoutNotice}</span>
+                <Link
+                  to="/customer-dashboard/orders"
+                  onClick={() => setCheckoutNotice("")}
+                >
+                  View orders
+                </Link>
+              </div>
+            )}
             {items.length === 0 ? (
               <p className="cart-empty">Your cart is empty.</p>
             ) : (
@@ -159,17 +199,23 @@ const DashboardLayout = ({ links, showCart = false }) => {
                   ))}
                 </ul>
                 <footer className="cart-drawer-foot">
+                  {checkoutError && (
+                    <p className="cp-error" role="alert">
+                      {checkoutError}
+                    </p>
+                  )}
                   <div>
                     <strong>Subtotal</strong>
                     <strong>{currency.format(total)}</strong>
                   </div>
-                  <Link
-                    to="/customer-dashboard/products"
+                  <p className="cart-payment-note">Payment method: Card</p>
+                  <button
                     className="cart-continue"
-                    onClick={() => setCartOpen(false)}
+                    disabled={checkoutBusy || items.length === 0}
+                    onClick={handleCheckout}
                   >
-                    Continue shopping
-                  </Link>
+                    {checkoutBusy ? "Confirming..." : "Confirm order"}
+                  </button>
                 </footer>
               </>
             )}

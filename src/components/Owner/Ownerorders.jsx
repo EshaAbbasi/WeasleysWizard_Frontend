@@ -2,23 +2,41 @@ import { useState, useEffect } from "react";
 import shopService from "../../services/shopService";
 import orderService from "../../services/orderService";
 
+const currency = new Intl.NumberFormat("en-BH", {
+  style: "currency",
+  currency: "BHD",
+});
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    loadOrders();
+    let mounted = true;
+    const refresh = () => {
+      shopService
+        .getMyShopOrders()
+        .then((data) => {
+          if (mounted)
+            setOrders(Array.isArray(data) ? data : data?.items || []);
+        })
+        .catch(() => {
+          if (mounted) setOrders([]);
+        });
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 30000);
+    return () => {
+      mounted = false;
+      window.clearInterval(interval);
+    };
   }, []);
-
-  const loadOrders = () => {
-    shopService
-      .getMyShopOrders()
-      .then(setOrders)
-      .catch(() => setOrders([]));
-  };
 
   const handleStatusChange = async (orderId, status) => {
     await orderService.updateOrderStatus(orderId, status);
-    loadOrders();
+    shopService
+      .getMyShopOrders()
+      .then((data) => setOrders(Array.isArray(data) ? data : data?.items || []))
+      .catch(() => setOrders([]));
   };
 
   return (
@@ -27,13 +45,14 @@ const Orders = () => {
       {orders.map((order) => (
         <div key={order.id}>
           <p>
-            Order #{order.id} — £{order.total_gbp} — {order.payment_method}
+            Order #{order.id} — {currency.format(Number(order.total_gbp) || 0)}{" "}
+            — {order.payment_method}
           </p>
           <ul>
-            {order.items.map((item) => (
+            {(order.items || []).map((item) => (
               <li key={item.id}>
-                Product #{item.product_id} × {item.quantity} (£
-                {item.price_at_purchase} each)
+                Product #{item.product_id} × {item.quantity} (
+                {currency.format(Number(item.price_at_purchase) || 0)} each)
               </li>
             ))}
           </ul>

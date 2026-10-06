@@ -55,9 +55,11 @@ const CustomerOverview = () => {
 
     refresh();
     const interval = window.setInterval(refresh, 30000);
+    window.addEventListener("orders:updated", refresh);
     return () => {
       mounted = false;
       window.clearInterval(interval);
+      window.removeEventListener("orders:updated", refresh);
     };
   }, []);
 
