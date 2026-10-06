@@ -121,8 +121,11 @@ const AdminReviews = () => {
                     {review.username ||
                       review.user_name ||
                       review.user?.username ||
+                      review.user?.name ||
                       review.author?.username ||
+                      review.author?.name ||
                       review.customer?.username ||
+                      review.customer?.name ||
                       "Customer name unavailable"}
                   </td>
                   <td>{review.rating ? `${review.rating}/5` : "-"}</td>
