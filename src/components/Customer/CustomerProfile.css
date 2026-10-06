@@ -1,0 +1,187 @@
+.cpf {
+  max-width: 640px;
+}
+
+.cpf-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.cpf-top h2 {
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+}
+
+.cpf-avatar {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  border: 2px solid #b8960c;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.cpf-role {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(166, 124, 26, 0.22);
+  color: #2b1d08;
+}
+
+.cpf-ok,
+.cpf-error {
+  margin: 0 0 14px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cpf-ok {
+  background: #cfe5c4;
+  color: #1d4a12;
+}
+.cpf-error {
+  background: #f1c9c9;
+  color: #7a1212;
+}
+
+/* ---------- View mode ---------- */
+.cpf-info {
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpf-info div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(90, 61, 8, 0.25);
+}
+
+.cpf-info dt {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #4a3718;
+}
+
+.cpf-info dd {
+  margin: 0;
+  font-weight: 700;
+  word-break: break-all;
+  text-align: right;
+}
+
+/* ---------- Edit mode ---------- */
+.cpf form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cpf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cpf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cpf-field label {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #2b1d08;
+}
+
+.cpf-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-family: "EB Garamond", serif;
+  font-size: 1.05rem;
+  color: #1a1209;
+  background: rgba(255, 248, 225, 0.5);
+  border: none;
+  border-bottom: 2px solid rgba(43, 29, 8, 0.75);
+  border-radius: 6px 6px 0 0;
+  outline: none;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.cpf-field input:focus {
+  background: rgba(255, 248, 225, 0.85);
+  border-bottom-color: #b8891b;
+}
+
+/* ---------- Buttons ---------- */
+.cpf-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cpf-btn {
+  cursor: pointer;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-family: "Cinzel", serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: #f5ecd9;
+  background: linear-gradient(135deg, #8d0000, #4d0000);
+  border: 1px solid #b8960c;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.cpf-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(141, 0, 0, 0.5);
+}
+
+.cpf-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cpf-btn.ghost {
+  color: #1a1209;
+  background: transparent;
+  border: 2px solid rgba(26, 18, 9, 0.7);
+}
+
+@media (max-width: 560px) {
+  .cpf-grid {
+    grid-template-columns: 1fr;
+  }
+  .cpf-actions {
+    flex-direction: column;
+  }
+  .cpf-btn {
+    width: 100%;
+  }
+}

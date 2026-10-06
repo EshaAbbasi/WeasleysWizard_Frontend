@@ -8,6 +8,6 @@ const links = [
   { to: "/customer-dashboard/profile", label: "Profile" },
 ];
 
-const CustomerDashboard = () => <DashboardLayout links={links} />;
+const CustomerDashboard = () => <DashboardLayout links={links} showCart />;
 
 export default CustomerDashboard;

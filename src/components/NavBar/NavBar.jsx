@@ -21,10 +21,7 @@ const NavBar = () => {
 
       <ul className="navbar-links">
         {user ? (
-          <>
-            <li className="navbar-greeting">Hello, {user.username}</li>
-            <li></li>
-          </>
+          <></>
         ) : (
           <>
             <li>
