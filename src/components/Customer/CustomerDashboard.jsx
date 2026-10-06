@@ -1,24 +1,13 @@
-import { useContext } from "react";
-import { NavLink, Outlet } from "react-router";
-import { UserContext } from "../../contexts/UserContext";
+import DashboardLayout from "../DashboardLayout/DashboardLayout";
 
-const CustomerDashboard = () => {
-  const { logout } = useContext(UserContext);
+const links = [
+  { to: "/customer-dashboard", label: "Dashboard", end: true },
+  { to: "/customer-dashboard/products", label: "Products" },
+  { to: "/customer-dashboard/favorites", label: "Favorites" },
+  { to: "/customer-dashboard/orders", label: "My Orders" },
+  { to: "/customer-dashboard/profile", label: "Profile" },
+];
 
-  return (
-    <div className="dashboard-layout">
-      <aside className="dashboard-sidebar">
-        <NavLink to="/customer-dashboard/profile">Profile</NavLink>
-        <NavLink to="/customer-dashboard/products">Products</NavLink>
-        <NavLink to="/customer-dashboard/favorites">Favorites</NavLink>
-        <NavLink to="/customer-dashboard/orders">My Orders</NavLink>
-        <button onClick={logout}>Log Out</button>
-      </aside>
-      <main className="dashboard-content">
-        <Outlet />
-      </main>
-    </div>
-  );
-};
+const CustomerDashboard = () => <DashboardLayout links={links} />;
 
 export default CustomerDashboard;
