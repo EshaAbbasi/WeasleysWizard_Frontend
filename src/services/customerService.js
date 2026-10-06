@@ -4,7 +4,7 @@ import productService from "./productService";
 const listProducts = (category) => productService.listProducts(category);
 
 const getProductReviews = (productId) =>
-  api.get(`/reviews/${productId}`).then((r) => r.data);
+  api.get(`/reviews/${productId}`, { cache: "no-store" }).then((r) => r.data);
 
 const createReview = (data) => api.post("/reviews", data).then((r) => r.data);
 
@@ -19,12 +19,19 @@ const toggleFavorite = (productId, isFavorite) =>
     .then((r) => r.data);
 
 const getMyFavorites = async () => {
-  const favorites = await api.get("/favorites").then((r) => r.data);
-  const rows = Array.isArray(favorites) ? favorites : [];
+  const favorites = await api
+    .get("/favorites", { cache: "no-store" })
+    .then((r) => r.data);
+  const rows = Array.isArray(favorites)
+    ? favorites
+    : favorites?.items || favorites?.favorites || [];
   const products = await Promise.all(
     rows.map(async (fav) => {
+      if (fav.product) return fav;
+      const productId = fav.product_id ?? fav.product?.id;
+      if (productId == null) return { ...fav, product: null };
       try {
-        const product = await productService.getProduct(fav.product_id);
+        const product = await productService.getProduct(productId);
         return { ...fav, product };
       } catch {
         return { ...fav, product: null };

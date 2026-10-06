@@ -1,9 +1,13 @@
-const ROOT = (import.meta.env.VITE_BACK_END_SERVER_URL || "").replace(/\/$/, "");
+const ROOT = (import.meta.env.VITE_BACK_END_SERVER_URL || "").replace(
+  /\/$/,
+  "",
+);
 const BASE_URL = `${ROOT}/api`;
 
 const errorMessage = (responseData, fallback) => {
   if (responseData == null) return fallback;
-  if (typeof responseData === "string" && responseData.trim()) return responseData;
+  if (typeof responseData === "string" && responseData.trim())
+    return responseData;
   const detail = responseData.detail;
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail)) {
@@ -40,7 +44,12 @@ const request = async (method, path, data, config = {}) => {
     }
   }
 
-  const response = await fetch(url, { method, headers, body });
+  const response = await fetch(url, {
+    method,
+    headers,
+    body,
+    cache: config.cache,
+  });
   const responseText = await response.text();
   let responseData = responseText;
 

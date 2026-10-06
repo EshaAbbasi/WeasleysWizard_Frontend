@@ -90,7 +90,7 @@
   border-radius: 50%;
   font-size: 1.2rem;
   line-height: 1;
-  color: #8d0000;
+  color: #8a7564;
   background: rgba(251, 246, 234, 0.92);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s;
@@ -101,8 +101,8 @@
 }
 
 .cp-fav.on {
-  color: #f5ecd9;
-  background: #8d0000;
+  color: #d71936;
+  background: rgba(255, 250, 240, 0.96);
 }
 
 .cp-cat {

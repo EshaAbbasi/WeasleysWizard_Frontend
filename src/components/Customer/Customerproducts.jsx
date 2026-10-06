@@ -19,7 +19,8 @@ const Products = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
-  const [favorites, setFavorites] = useState([]); // ids favorited this session
+  const [favorites, setFavorites] = useState([]);
+  const [favoritePending, setFavoritePending] = useState([]);
   const [justAdded, setJustAdded] = useState(null); // id for the "Added" flash
   const [addError, setAddError] = useState("");
 
@@ -28,6 +29,17 @@ const Products = () => {
       .getCategories()
       .then(setCategories)
       .catch(() => {});
+
+    customerService
+      .getMyFavorites()
+      .then((rows) =>
+        setFavorites(
+          rows.map((favorite) =>
+            String(favorite.product_id ?? favorite.product?.id),
+          ),
+        ),
+      )
+      .catch(() => setFavorites([]));
   }, []);
 
   useEffect(() => {
@@ -40,11 +52,22 @@ const Products = () => {
   }, [selectedCategory]);
 
   const handleFavorite = async (productId) => {
+    const favoriteId = String(productId);
+    const isFavorite = favorites.includes(favoriteId);
+    setFavoritePending((current) => [...current, favoriteId]);
     try {
-      await customerService.toggleFavorite(productId, true);
-      setFavorites((prev) => [...prev, productId]);
+      await customerService.toggleFavorite(productId, !isFavorite);
+      setFavorites((current) =>
+        isFavorite
+          ? current.filter((id) => id !== favoriteId)
+          : [...current, favoriteId],
+      );
     } catch {
-      /* ignore */
+      setAddError("Could not update favorites. Please try again.");
+    } finally {
+      setFavoritePending((current) =>
+        current.filter((id) => id !== favoriteId),
+      );
     }
   };
 
@@ -90,7 +113,8 @@ const Products = () => {
 
       <div className="cp-grid">
         {products.map((product) => {
-          const faved = favorites.includes(product.id);
+          const favoriteId = String(product.id);
+          const faved = favorites.includes(favoriteId);
           return (
             <article className="dash-card cp-card" key={product.id}>
               <div className="cp-img">
@@ -113,7 +137,11 @@ const Products = () => {
                 <button
                   className={"cp-fav" + (faved ? " on" : "")}
                   onClick={() => handleFavorite(product.id)}
-                  aria-label="Add to favorites"
+                  disabled={favoritePending.includes(favoriteId)}
+                  aria-pressed={faved}
+                  aria-label={
+                    faved ? "Remove from favorites" : "Add to favorites"
+                  }
                 >
                   {faved ? "♥" : "♡"}
                 </button>

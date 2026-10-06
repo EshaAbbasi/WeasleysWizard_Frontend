@@ -7,7 +7,31 @@ import productService from "../../services/productService";
 import uploadService, { resolveImageUrl } from "../../services/uploadService";
 import "./CustomerProducts.css";
 
-const asList = (data) => (Array.isArray(data) ? data : data?.items || []);
+const asList = (data) =>
+  Array.isArray(data) ? data : data?.items || data?.reviews || [];
+const asReviews = (data) =>
+  asList(data).filter(
+    (review) => review.is_favorite !== true && review.is_favorite !== 1,
+  );
+const reviewAuthor = (review) =>
+  review?.username ||
+  review?.user_name ||
+  review?.user?.username ||
+  review?.author?.username ||
+  "";
+const addReviewAuthors = (reviews, knownReviews) => {
+  const knownById = new Map(
+    knownReviews.map((review) => [String(review.id), review]),
+  );
+  return reviews.map((review) => {
+    const known = knownById.get(String(review.id));
+    return {
+      ...known,
+      ...review,
+      username: reviewAuthor(review) || reviewAuthor(known),
+    };
+  });
+};
 const currentUserId = (user) => user?.id ?? user?.user_id;
 const reviewUserId = (review) => review?.user_id ?? review?.customer_id;
 const reviewImage = (review) =>
@@ -45,7 +69,9 @@ const CustomerProductDetail = () => {
       ]);
       setProduct(productData);
       setActiveImage(productData.image_urls?.[0] || "");
-      setReviews(asList(reviewData));
+      setReviews(
+        addReviewAuthors(asReviews(reviewData), asReviews(productData.reviews)),
+      );
     } catch {
       setError("Could not load this product. It may no longer be available.");
     } finally {
@@ -55,6 +81,29 @@ const CustomerProductDetail = () => {
 
   useEffect(() => {
     loadPage();
+  }, [productId]);
+
+  useEffect(() => {
+    let mounted = true;
+    const refreshReviews = () => {
+      customerService
+        .getProductReviews(productId)
+        .then((data) => {
+          if (mounted) {
+            setReviews((current) => addReviewAuthors(asReviews(data), current));
+          }
+        })
+        .catch(() => {});
+    };
+    const interval = window.setInterval(refreshReviews, 15000);
+    window.addEventListener("reviews:updated", refreshReviews);
+    window.addEventListener("focus", refreshReviews);
+    return () => {
+      mounted = false;
+      window.clearInterval(interval);
+      window.removeEventListener("reviews:updated", refreshReviews);
+      window.removeEventListener("focus", refreshReviews);
+    };
   }, [productId]);
 
   const ownReview = reviews.find(
@@ -99,7 +148,7 @@ const CustomerProductDetail = () => {
         ? await uploadService.uploadImage(imageFile)
         : reviewImage(editingReview);
       const payload = { rating, comment: comment.trim() };
-      if (imageUrl) payload.image_url = imageUrl;
+      if (imageUrl) payload.image_urls = [imageUrl];
       if (editingReview) {
         await customerService.updateReview(editingReview.id, payload);
         setNotice("Your review has been updated.");
@@ -110,6 +159,7 @@ const CustomerProductDetail = () => {
         });
         setNotice("Your review has been added.");
       }
+      window.dispatchEvent(new Event("reviews:updated"));
       cancelEditing();
       await loadPage();
     } catch (submitError) {
@@ -317,8 +367,7 @@ const CustomerProductDetail = () => {
             <article className="cp-review" key={review.id}>
               <div className="cp-review-heading">
                 <strong>
-                  {review.username ||
-                    review.user_name ||
+                  {reviewAuthor(review) ||
                     (String(reviewUserId(review)) ===
                     String(currentUserId(user))
                       ? user?.username || user?.name || "You"
@@ -340,7 +389,7 @@ const CustomerProductDetail = () => {
                 <img
                   className="cp-review-image"
                   src={resolveImageUrl(reviewImage(review))}
-                  alt={`Review from ${review.username || review.user_name || "customer"}`}
+                  alt={`Review from ${review.username || review.user_name || review.user?.username || "customer"}`}
                 />
               )}
             </article>
