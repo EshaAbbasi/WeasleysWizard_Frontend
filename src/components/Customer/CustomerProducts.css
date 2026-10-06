@@ -60,6 +60,21 @@
   transition: transform 0.4s;
 }
 
+.cp-img-open {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  place-items: center;
+  overflow: hidden;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
 .cp-card:hover .cp-img img {
   transform: scale(1.06);
 }
@@ -103,6 +118,20 @@
   margin: 0;
 }
 
+.cp-name {
+  padding: 0;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  font: inherit;
+}
+
+.cp-name:hover {
+  color: #7a1212;
+  text-decoration: underline;
+}
+
 .cp-price {
   margin: 2px 0 8px;
   font-family: "Playfair Display", serif;
@@ -138,6 +167,189 @@
   background: linear-gradient(135deg, #2f6b1f, #1d4a12);
 }
 
+.cp-error {
+  margin: 0;
+  padding: 10px 14px;
+  color: #7a1212;
+  background: #fff2ed;
+  border: 1px solid #d9a39a;
+  border-radius: 8px;
+}
+
+.cp-modal-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgba(20, 14, 8, 0.72);
+}
+
+.cp-modal {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: min(90dvh, 900px);
+  padding: clamp(18px, 3vw, 30px);
+  overflow-y: auto;
+  color: #1a1209;
+  background: #fffaf0;
+  border: 1px solid rgba(166, 124, 26, 0.55);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.cp-modal-close {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  color: #2b1d08;
+  background: rgba(255, 250, 240, 0.94);
+  border: 1px solid #d8c7a0;
+  border-radius: 50%;
+  font:
+    28px/1 "EB Garamond",
+    Georgia,
+    serif;
+}
+
+.cp-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 26px;
+}
+
+.cp-detail-image {
+  display: grid;
+  aspect-ratio: 1 / 0.88;
+  place-items: center;
+  overflow: hidden;
+  color: #5a4520;
+  background: rgba(90, 61, 8, 0.12);
+  border-radius: 8px;
+}
+
+.cp-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cp-thumbnails {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.cp-thumbnails button {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  padding: 3px;
+  overflow: hidden;
+  background: #fffaf0;
+  border: 1px solid #d8c7a0;
+  border-radius: 6px;
+}
+
+.cp-thumbnails button.active {
+  border: 2px solid #8d0000;
+}
+
+.cp-thumbnails img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cp-detail-copy {
+  padding-top: 12px;
+}
+
+.cp-detail-copy h2 {
+  margin: 6px 0;
+  padding-right: 34px;
+}
+
+.cp-description {
+  white-space: pre-wrap;
+}
+
+.cp-seller {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 12px 0;
+  border-top: 1px solid #d8c7a0;
+  border-bottom: 1px solid #d8c7a0;
+}
+
+.cp-seller > img,
+.cp-seller-placeholder {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.cp-seller-placeholder {
+  display: grid;
+  place-items: center;
+  color: #fffaf0;
+  background: #7a1212;
+  font-family: "Cinzel", serif;
+}
+
+.cp-seller div {
+  display: grid;
+}
+
+.cp-seller div span {
+  color: #5a4d3a;
+  font-size: 0.9rem;
+}
+
+.cp-detail-copy .cp-add {
+  width: 100%;
+}
+
+.cp-reviews {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #d8c7a0;
+}
+
+.cp-reviews h3 {
+  margin: 0 0 12px;
+}
+
+.cp-review {
+  padding: 12px 0;
+  border-top: 1px solid rgba(216, 199, 160, 0.7);
+}
+
+.cp-review p {
+  margin: 4px 0 0;
+}
+
+.cp-review-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cp-review-heading span {
+  color: #8a6510;
+  white-space: nowrap;
+}
+
 @media (max-width: 480px) {
   .cp-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -145,5 +357,20 @@
   }
   .cp-card h3 {
     font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .cp-modal-backdrop {
+    padding: 10px;
+  }
+
+  .cp-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cp-detail-image {
+    max-height: 42dvh;
   }
 }

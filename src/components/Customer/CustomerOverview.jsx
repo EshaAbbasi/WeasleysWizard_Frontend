@@ -1,46 +1,23 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
+import customerService from "../../services/customerService";
 import "../OwnerDashboard/OwnerOverview.css";
 import "./CustomerOverview.css";
 
-// ---- placeholder data: replace with your API data ----
-const STATS = [
-  { label: "Total orders", value: "14", note: "2 on the way" },
-  { label: "Total spent", value: "BHD 186", note: "all time" },
-  { label: "Favorites", value: "9", note: "3 added this week" },
-  { label: "Wishlist deals", value: "2", note: "items on sale" },
-];
+const asList = (data) => (Array.isArray(data) ? data : data?.items || []);
+const currency = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+const STATUS_GROUPS = ["Delivered", "In transit", "Processing"];
 
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-const SPENDING = [20, 35, 15, 50, 30, 45, 25, 60, 40, 55, 80, 65]; // % height
-const ACTIVE_MONTH = 10;
-
-const ORDER_STATUS = [
-  { label: "Delivered", value: 72 },
-  { label: "Shipped", value: 21 },
-  { label: "Processing", value: 7 },
-];
-
-const RECENT = [
-  { item: "Phoenix Wand", date: "2 Oct", status: "Shipped" },
-  { item: "House Hoodie", date: "21 Sep", status: "Delivered" },
-  { item: "Travel Trunk", date: "5 Sep", status: "Delivered" },
-  { item: "Gift Box", date: "18 Aug", status: "Delivered" },
-];
+const getStatusGroup = (status = "") => {
+  const value = status.toLowerCase();
+  if (value.includes("deliver")) return "Delivered";
+  if (value.includes("transit") || value.includes("ship")) return "In transit";
+  return "Processing";
+};
 
 const greeting = () => {
   const h = new Date().getHours();
@@ -51,6 +28,104 @@ const greeting = () => {
 
 const CustomerOverview = () => {
   const { user } = useContext(UserContext);
+  const [orders, setOrders] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    const refresh = async () => {
+      try {
+        const [orderData, favoriteData] = await Promise.all([
+          customerService.getMyOrders(),
+          customerService.getMyFavorites(),
+        ]);
+        if (mounted) {
+          setOrders(asList(orderData));
+          setFavorites(asList(favoriteData));
+          setError("");
+        }
+      } catch {
+        if (mounted) setError("Could not refresh your account activity.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    refresh();
+    const interval = window.setInterval(refresh, 30000);
+    return () => {
+      mounted = false;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  const totalSpent = orders.reduce(
+    (total, order) => total + (Number(order.total_gbp) || 0),
+    0,
+  );
+  const inProgress = orders.filter(
+    (order) => getStatusGroup(order.status) !== "Delivered",
+  ).length;
+  const stats = [
+    {
+      label: "Total orders",
+      value: orders.length,
+      note: `${inProgress} in progress`,
+    },
+    {
+      label: "Total spent",
+      value: currency.format(totalSpent),
+      note: "all time",
+    },
+    { label: "Favorites", value: favorites.length, note: "saved products" },
+    {
+      label: "Delivered",
+      value: orders.filter(
+        (order) => getStatusGroup(order.status) === "Delivered",
+      ).length,
+      note: "completed orders",
+    },
+  ];
+  const now = new Date();
+  const months = Array.from({ length: 12 }, (_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth() - 11 + index, 1);
+    return {
+      label: date.toLocaleDateString("en-GB", { month: "short" }),
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      total: 0,
+    };
+  });
+  orders.forEach((order) => {
+    const date = new Date(order.created_at || order.date || "");
+    const month = months.find(
+      (item) =>
+        item.year === date.getFullYear() && item.month === date.getMonth(),
+    );
+    if (month && !Number.isNaN(date.getTime())) {
+      month.total += Number(order.total_gbp) || 0;
+    }
+  });
+  const maxSpend = Math.max(...months.map((month) => month.total), 1);
+  const statuses = STATUS_GROUPS.map((label) => {
+    const count = orders.filter(
+      (order) => getStatusGroup(order.status) === label,
+    ).length;
+    return {
+      label,
+      count,
+      value: orders.length ? Math.round((count / orders.length) * 100) : 0,
+    };
+  });
+  const recentOrders = [...orders]
+    .sort(
+      (left, right) =>
+        new Date(right.created_at || right.date || 0) -
+        new Date(left.created_at || left.date || 0),
+    )
+    .slice(0, 4);
 
   return (
     <div className="ov">
@@ -58,11 +133,16 @@ const CustomerOverview = () => {
         {greeting()}, <em>{user?.username}!</em>
       </h1>
 
+      {error && (
+        <p className="cp-error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="ov-stats">
-        {STATS.map((s) => (
+        {stats.map((s) => (
           <div className="dash-card ov-stat" key={s.label}>
             <span className="ov-stat-label">{s.label}</span>
-            <strong>{s.value}</strong>
+            <strong>{loading ? "..." : s.value}</strong>
             <span className="ov-stat-note">{s.note}</span>
           </div>
         ))}
@@ -72,18 +152,23 @@ const CustomerOverview = () => {
         <section className="dash-card ov-chart">
           <div className="ov-head">
             <h2>My spending</h2>
-            <span className="ov-chip">This year</span>
+            <span className="ov-chip">Last 12 months</span>
           </div>
-          <p className="ov-big">BHD 186</p>
+          <p className="ov-big">
+            {loading ? "..." : currency.format(totalSpent)}
+          </p>
 
           <div className="ov-bars">
-            {SPENDING.map((h, i) => (
-              <div className="ov-col" key={MONTHS[i]}>
+            {months.map((month, index) => (
+              <div className="ov-col" key={`${month.year}-${month.month}`}>
                 <div
-                  className={"ov-bar" + (i === ACTIVE_MONTH ? " on" : "")}
-                  style={{ height: `${h}%` }}
+                  className={"ov-bar" + (index === 11 ? " on" : "")}
+                  style={{
+                    height: `${Math.max((month.total / maxSpend) * 100, month.total ? 8 : 0)}%`,
+                  }}
+                  title={`${month.label} ${month.year}: ${currency.format(month.total)}`}
                 />
-                <span>{MONTHS[i]}</span>
+                <span>{month.label}</span>
               </div>
             ))}
           </div>
@@ -92,11 +177,13 @@ const CustomerOverview = () => {
         <aside className="ov-side">
           <section className="dash-card">
             <h2 className="ov-h2">Order status</h2>
-            {ORDER_STATUS.map((o) => (
+            {statuses.map((o) => (
               <div className="ov-prog" key={o.label}>
                 <div className="ov-prog-row">
                   <span>{o.label}</span>
-                  <span>{o.value}%</span>
+                  <span>
+                    {o.count} ({o.value}%)
+                  </span>
                 </div>
                 <div className="ov-track">
                   <div style={{ width: `${o.value}%` }} />
@@ -108,18 +195,36 @@ const CustomerOverview = () => {
           <section className="dash-card">
             <h2 className="ov-h2">Recent orders</h2>
             <ul className="ov-recent">
-              {RECENT.map((r) => (
-                <li key={r.item}>
-                  <span className="ov-avatar">{r.item[0]}</span>
+              {recentOrders.map((order) => (
+                <li key={order.id}>
+                  <span className="ov-avatar">
+                    {(order.items?.[0]?.name || `#${order.id}`)[0]}
+                  </span>
                   <div>
-                    <strong>{r.item}</strong>
-                    <small>{r.date}</small>
+                    <strong>
+                      {order.items?.[0]?.name || `Order #${order.id}`}
+                    </strong>
+                    <small>
+                      {order.created_at || order.date
+                        ? new Date(
+                            order.created_at || order.date,
+                          ).toLocaleDateString("en-GB")
+                        : "Date unavailable"}
+                    </small>
                   </div>
-                  <span className={"ov-tag " + r.status.toLowerCase()}>
-                    {r.status}
+                  <span
+                    className={
+                      "ov-tag " +
+                      getStatusGroup(order.status)
+                        .toLowerCase()
+                        .replace(" ", "-")
+                    }
+                  >
+                    {order.status || "Processing"}
                   </span>
                 </li>
               ))}
+              {!loading && recentOrders.length === 0 && <li>No orders yet.</li>}
             </ul>
           </section>
         </aside>
