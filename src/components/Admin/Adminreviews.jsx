@@ -105,7 +105,6 @@ const AdminReviews = () => {
             <thead>
               <tr>
                 <th>Product</th>
-                <th>Customer</th>
                 <th>Rating</th>
                 <th>Review</th>
                 <th>Action</th>
@@ -116,17 +115,6 @@ const AdminReviews = () => {
                 <tr key={review.id}>
                   <td>
                     {review.product_name || `Product #${review.product_id}`}
-                  </td>
-                  <td>
-                    {review.username ||
-                      review.user_name ||
-                      review.user?.username ||
-                      review.user?.name ||
-                      review.author?.username ||
-                      review.author?.name ||
-                      review.customer?.username ||
-                      review.customer?.name ||
-                      "Customer name unavailable"}
                   </td>
                   <td>{review.rating ? `${review.rating}/5` : "-"}</td>
                   <td>{review.comment || "-"}</td>
