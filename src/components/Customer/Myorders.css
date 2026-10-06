@@ -108,14 +108,15 @@
 }
 
 .orders-items li {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
   gap: 12px;
   color: #2b1d08;
   font-size: 0.92rem;
 }
 
-.orders-items li span:first-child {
+.orders-items li strong {
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -140,5 +141,9 @@
   .orders-summary strong {
     grid-column: 1 / -1;
     margin-left: 0;
+  }
+
+  .orders-items li {
+    gap: 9px;
   }
 }
