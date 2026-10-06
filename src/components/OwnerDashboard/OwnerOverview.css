@@ -222,6 +222,14 @@
   background: #f1c9c9;
   color: #7a1212;
 }
+.ov-tag.in-transit {
+  background: #f2e2a6;
+  color: #5a4208;
+}
+.ov-tag.processing {
+  background: #f1c9c9;
+  color: #7a1212;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {

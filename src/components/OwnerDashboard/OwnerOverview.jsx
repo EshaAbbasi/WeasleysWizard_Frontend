@@ -20,13 +20,14 @@ const getOrderDate = (order) =>
 const getOrderRevenue = (order) => {
   const items = order.items || [];
   if (!items.length) return Number(order.total_gbp) || 0;
-  return items.reduce(
+  const itemRevenue = items.reduce(
     (total, item) =>
       total +
       (Number(item.price_at_purchase ?? item.price_gbp) || 0) *
         (Number(item.quantity) || 0),
     0,
   );
+  return itemRevenue || Number(order.total_gbp) || 0;
 };
 const getStatusGroup = (status = "") => {
   const value = String(status).toLowerCase();

@@ -9,20 +9,27 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
+  padding: clamp(14px, 2vw, 20px);
+  color: #24190f;
+  background: rgba(255, 250, 240, 0.96);
+  border: 1px solid rgba(166, 124, 26, 0.48);
+  border-radius: 8px;
+  box-shadow: 0 5px 16px rgba(40, 25, 8, 0.2);
 }
 
 .owner-page-header h1 {
   margin: 2px 0 4px;
+  color: #21170e;
   font-size: clamp(1.45rem, 3vw, 2rem);
 }
 
 .owner-page-header p {
   margin: 0;
-  color: #5a4520;
+  color: #443525;
 }
 
 .owner-eyebrow {
-  color: #8a6510;
+  color: #654800;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
