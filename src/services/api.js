@@ -1,4 +1,18 @@
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api`;
+const ROOT = (import.meta.env.VITE_BACK_END_SERVER_URL || "").replace(/\/$/, "");
+const BASE_URL = `${ROOT}/api`;
+
+const errorMessage = (responseData, fallback) => {
+  if (responseData == null) return fallback;
+  if (typeof responseData === "string" && responseData.trim()) return responseData;
+  const detail = responseData.detail;
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => item?.msg || item?.detail || JSON.stringify(item))
+      .join("; ");
+  }
+  return fallback;
+};
 
 const request = async (method, path, data, config = {}) => {
   const url = new URL(`${BASE_URL}${path}`, window.location.origin);
@@ -48,7 +62,7 @@ const request = async (method, path, data, config = {}) => {
 
   if (!response.ok) {
     const error = new Error(
-      responseData?.detail || response.statusText || "Request failed",
+      errorMessage(responseData, response.statusText || "Request failed"),
     );
     error.response = result;
     throw error;
@@ -65,3 +79,4 @@ const api = {
 };
 
 export default api;
+export { BASE_URL, errorMessage };

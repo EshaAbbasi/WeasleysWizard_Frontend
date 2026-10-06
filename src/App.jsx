@@ -23,6 +23,7 @@ import Overview from "./components/Admin/Overview";
 import AdminShops from "./components/Admin/Adminshops";
 import AdminProducts from "./components/Admin/Adminproducts";
 import AdminOrders from "./components/Admin/Adminorders";
+import AdminReviews from "./components/Admin/Adminreviews";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -55,6 +56,7 @@ const App = () => {
           <Route path="shops" element={<AdminShops />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="reviews" element={<AdminReviews />} />
         </Route>
         <Route path="/customer-dashboard" element={<CustomerDashboard />}>
           <Route index element={<CustomerOverview />} /> {/* CHANGED */}

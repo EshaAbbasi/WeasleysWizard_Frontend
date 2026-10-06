@@ -1,19 +1,55 @@
-// src/services/customerService.js
-
 import api from "./api";
+import productService from "./productService";
 
-const listProducts = (category) =>
-  api
-    .get("/products", { params: category ? { category } : {} })
-    .then((r) => r.data);
+const listProducts = (category) => productService.listProducts(category);
+
+const getProductReviews = (productId) =>
+  api.get(`/reviews/${productId}`).then((r) => r.data);
+
+const createReview = (data) => api.post("/reviews", data).then((r) => r.data);
+
+const updateReview = (reviewId, data) =>
+  api.put(`/reviews/${reviewId}`, data).then((r) => r.data);
+
+const deleteReview = (reviewId) => api.delete(`/reviews/${reviewId}`);
 
 const toggleFavorite = (productId, isFavorite) =>
   api
     .post("/reviews", { product_id: productId, is_favorite: isFavorite })
     .then((r) => r.data);
 
-const getMyFavorites = () => api.get("/favorites").then((r) => r.data);
+const getMyFavorites = async () => {
+  const favorites = await api.get("/favorites").then((r) => r.data);
+  const rows = Array.isArray(favorites) ? favorites : [];
+  const products = await Promise.all(
+    rows.map(async (fav) => {
+      try {
+        const product = await productService.getProduct(fav.product_id);
+        return { ...fav, product };
+      } catch {
+        return { ...fav, product: null };
+      }
+    }),
+  );
+  return products;
+};
 
 const getMyOrders = () => api.get("/orders").then((r) => r.data);
 
-export default { listProducts, toggleFavorite, getMyFavorites, getMyOrders };
+const checkout = (payload) => api.post("/orders", payload).then((r) => r.data);
+
+const validateCoupon = (coupon_code) =>
+  api.post("/coupons/validate", { coupon_code }).then((r) => r.data);
+
+export default {
+  listProducts,
+  getProductReviews,
+  createReview,
+  updateReview,
+  deleteReview,
+  toggleFavorite,
+  getMyFavorites,
+  getMyOrders,
+  checkout,
+  validateCoupon,
+};

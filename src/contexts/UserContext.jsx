@@ -1,5 +1,3 @@
-// src/contexts/UserContext.jsx
-
 import { createContext, useState, useEffect, useContext } from "react";
 import { signIn, signUp } from "../services/authService";
 import { currentUser } from "../services/userService";
@@ -27,17 +25,15 @@ export function UserProvider({ children }) {
   }, []);
 
   const login = async (credentials) => {
-    const userData = await signIn(credentials);
-    const me = await currentUser();
-    setUser(me || userData);
-    return userData;
+    const me = await signIn(credentials);
+    setUser(me);
+    return me;
   };
 
   const register = async (userData) => {
-    const newUser = await signUp(userData);
-    const me = await currentUser();
-    setUser(me || newUser);
-    return newUser;
+    const me = await signUp(userData);
+    setUser(me);
+    return me;
   };
 
   const logout = () => {

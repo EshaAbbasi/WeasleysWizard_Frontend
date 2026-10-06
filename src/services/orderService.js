@@ -1,5 +1,3 @@
-// src/services/orderService.js
-
 import api from "./api";
 
 const ORDER_STATUSES = [
@@ -11,4 +9,6 @@ const ORDER_STATUSES = [
 const updateOrderStatus = (orderId, status) =>
   api.put(`/orders/${orderId}/status`, { status }).then((r) => r.data);
 
-export default { updateOrderStatus, ORDER_STATUSES };
+const checkout = (payload) => api.post("/orders", payload).then((r) => r.data);
+
+export default { updateOrderStatus, ORDER_STATUSES, checkout };

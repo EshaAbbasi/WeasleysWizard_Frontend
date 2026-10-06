@@ -1,24 +1,13 @@
-import { useContext } from "react";
-import { NavLink, Outlet } from "react-router";
-import { UserContext } from "../../contexts/UserContext";
+import DashboardLayout from "../DashboardLayout/DashboardLayout";
 
-const AdminDashboard = () => {
-  const { logout } = useContext(UserContext);
+const links = [
+  { to: "/admin-dashboard", label: "Overview", end: true },
+  { to: "/admin-dashboard/shops", label: "Shops" },
+  { to: "/admin-dashboard/products", label: "Products" },
+  { to: "/admin-dashboard/orders", label: "Orders" },
+  { to: "/admin-dashboard/reviews", label: "Reviews" },
+];
 
-  return (
-    <div className="dashboard-layout">
-      <aside className="dashboard-sidebar">
-        <NavLink to="/admin-dashboard/overview">Overview</NavLink>
-        <NavLink to="/admin-dashboard/shops">Shops</NavLink>
-        <NavLink to="/admin-dashboard/products">Products</NavLink>
-        <NavLink to="/admin-dashboard/orders">Orders</NavLink>
-        <button onClick={logout}>Log Out</button>
-      </aside>
-      <main className="dashboard-content">
-        <Outlet />
-      </main>
-    </div>
-  );
-};
+const AdminDashboard = () => <DashboardLayout links={links} />;
 
 export default AdminDashboard;
