@@ -13,7 +13,7 @@ const currency = new Intl.NumberFormat("en-GB", {
 const STATUS_GROUPS = ["Delivered", "In transit", "Processing"];
 
 const getStatusGroup = (status = "") => {
-  const value = status.toLowerCase();
+  const value = String(status || "").toLowerCase();
   if (value.includes("deliver")) return "Delivered";
   if (value.includes("transit") || value.includes("ship")) return "In transit";
   return "Processing";

@@ -350,6 +350,141 @@
   white-space: nowrap;
 }
 
+.cp-detail-page {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.cp-product-page {
+  width: 100%;
+}
+
+.cp-detail-copy h1 {
+  margin: 6px 0;
+  padding-right: 10px;
+  font-family: "Playfair Display", "Cinzel", serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+}
+
+.cp-back {
+  align-self: flex-start;
+  padding: 8px 0;
+  color: #5a241c;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cp-back:hover {
+  text-decoration: underline;
+}
+
+.cp-reviews-title-row,
+.cp-review-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cp-reviews-title-row h2 {
+  font-size: 1.35rem;
+}
+
+.cp-review-edit,
+.cp-cancel {
+  padding: 9px 14px;
+  color: #5a241c;
+  background: transparent;
+  border: 1px solid #b8960c;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cp-review-form {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  margin: 16px 0;
+  padding: 16px 0;
+  border-top: 1px solid rgba(216, 199, 160, 0.7);
+  border-bottom: 1px solid rgba(216, 199, 160, 0.7);
+}
+
+.cp-review-form fieldset {
+  padding: 0;
+  border: 0;
+}
+
+.cp-review-form legend,
+.cp-image-upload {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.cp-rating-picker {
+  display: flex;
+  gap: 4px;
+}
+
+.cp-rating-picker button {
+  padding: 0 2px;
+  color: #a99e88;
+  background: none;
+  border: 0;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cp-rating-picker button.selected {
+  color: #a87908;
+}
+
+.cp-image-upload {
+  display: grid;
+  gap: 8px;
+}
+
+.cp-review-image,
+.cp-review-image-preview {
+  display: block;
+  width: min(220px, 100%);
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cp-file-name,
+.cp-notice {
+  color: #315c2a;
+}
+
+.cp-review-form-actions .cp-add {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .cp-product-page {
+    padding: 14px;
+  }
+
+  .cp-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cp-detail-image {
+    max-height: 48dvh;
+  }
+}
+
 @media (max-width: 480px) {
   .cp-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

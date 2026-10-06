@@ -13,6 +13,7 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import CustomerOverview from "./components/Customer/CustomerOverview"; // NEW
 import CustomerProfile from "./components/Customer/Customerprofile";
 import CustomerProducts from "./components/Customer/Customerproducts";
+import CustomerProductDetail from "./components/Customer/CustomerProductDetail";
 import Favorites from "./components/Customer/Favorites";
 import MyOrders from "./components/Customer/Myorders";
 import OwnerProfile from "./components/Owner/Ownerprofile";
@@ -62,6 +63,10 @@ const App = () => {
           <Route index element={<CustomerOverview />} /> {/* CHANGED */}
           <Route path="profile" element={<CustomerProfile />} />
           <Route path="products" element={<CustomerProducts />} />
+          <Route
+            path="products/:productId"
+            element={<CustomerProductDetail />}
+          />
           <Route path="favorites" element={<Favorites />} />
           <Route path="orders" element={<MyOrders />} />
         </Route>
