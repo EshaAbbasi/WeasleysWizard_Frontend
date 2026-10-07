@@ -19,11 +19,16 @@
 .footer-brand {
   display: flex;
   align-items: center;
+  min-width: 0;
   gap: 10px;
   font-family: "Playfair Display", serif;
   font-weight: 700;
   font-size: 1.15rem;
   color: #f5ecd9;
+}
+
+.footer-brand span {
+  overflow-wrap: anywhere;
 }
 
 .site-footer .w-logo {
@@ -63,5 +68,10 @@
   .site-footer-inner {
     flex-direction: column;
     text-align: center;
+  }
+
+  .footer-brand {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }

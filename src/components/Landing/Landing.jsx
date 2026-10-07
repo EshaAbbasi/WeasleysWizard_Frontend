@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 import "./Landing.css";
-import Footer from "../Footer/Footer";
 
 import mainImg from "../../assets/main.jfif";
 import gift from "../../assets/gift.webp";
@@ -183,8 +182,6 @@ const Landing = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
     </main>
   );
 };

@@ -26,6 +26,7 @@ import AdminShops from "./components/Admin/Adminshops";
 import AdminProducts from "./components/Admin/Adminproducts";
 import AdminOrders from "./components/Admin/Adminorders";
 import AdminReviews from "./components/Admin/Adminreviews";
+import Footer from "./components/Footer/Footer";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -81,6 +82,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/sign-in" element={<SignInForm />} />
       </Routes>
+      <Footer />
     </>
   );
 };
