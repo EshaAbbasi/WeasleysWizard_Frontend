@@ -1,3 +1,7 @@
+<div align="center">
+
+<img src="./assets/logo.PNG" alt="Weasleys' Wizard Wheezes logo" width="140" />
+
 # ⚡ Weasleys' Wizard Wheezes ⚡
 
 ### _A Harry Potter themed e-commerce marketplace — for every Harry Potter fan._
@@ -13,9 +17,7 @@
 
 [![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/eshaabbasi/weasleyswizard_backend?utm_source=readme&utm_medium=badge)
 
-[🌐 Live Demo](https://weasleys-wizard-frontend.vercel.app) · [🎨 Front-end](./frontend) · [🧠 Back-end](./backend) · [📋 Planning Materials](./docs/Weasleys_Wizard_Wheezes_Project_Plan.pdf)
-
-![Weasleys' Wizard Wheezes home page](./assets/screenshot.png)
+[🌐 Live Demo](https://weasleys-wizard-frontend.vercel.app) · [🎨 Front-end](https://github.com/EshaAbbasi/WeasleysWizard_Frontend) · [🧠 Back-end](https://github.com/EshaAbbasi/WeasleysWizard_Backend) · [📋 Planning Materials](./docs/Weasleys_Wizard_Wheezes_Project_Plan.pdf)
 
 </div>
 
@@ -55,67 +57,9 @@ I built this as my capstone project for the General Assembly software engineerin
 | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | 🌐 **Deployed app**                                               | [weasleys-wizard-frontend.vercel.app](https://weasleys-wizard-frontend.vercel.app)                        |
 | 📋 **Planning materials** (user stories, ERD, wireframes, routes) | [Project Plan PDF](./docs/Weasleys_Wizard_Wheezes_Project_Plan.pdf)                                       |
-| 🧠 **Back-end code**                                              | [`/backend`](./backend)                                                                                   |
-| 🎨 **Front-end code**                                             | [`/frontend`](./frontend)                                                                                 |
+| 🧠 **Back-end repository**                                        | [WeasleysWizard_Backend](https://github.com/EshaAbbasi/WeasleysWizard_Backend)                            |
+| 🎨 **Front-end repository**                                       | [WeasleysWizard_Frontend](https://github.com/EshaAbbasi/WeasleysWizard_Frontend)                          |
 | 🧩 **Architecture diagram**                                       | [GitDiagram](https://gitdiagram.com/eshaabbasi/weasleyswizard_backend?utm_source=readme&utm_medium=badge) |
-
-### Repository structure
-
-```
-WeasleysWizard/
-├── frontend/     React app (deployed on Vercel)
-├── backend/      FastAPI app (deployed on Render)
-├── docs/         Planning materials (project plan PDF)
-├── assets/       Logo and screenshot used in this README
-└── README.md
-```
-
-### Run it locally
-
-**1. Clone the repo**
-
-```bash
-git clone https://github.com/EshaAbbasi/WeasleysWizard.git
-cd WeasleysWizard
-```
-
-**2. Start the back-end** (FastAPI)
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-Create `backend/.env` (adjust names to match your code):
-
-```env
-DATABASE_URL=postgresql://user:password@host:5432/postgres   # Supabase connection string
-SECRET_KEY=your-jwt-secret
-ALGORITHM=HS256
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
-FRONTEND_URL=http://localhost:5173
-```
-
-```bash
-uvicorn app.main:app --reload
-```
-
-The API runs at `http://localhost:8000` and the Swagger docs at `http://localhost:8000/docs`.
-
-**3. Start the front-end** (React), in a second terminal
-
-```bash
-cd frontend
-npm install
-echo "VITE_API_URL=http://localhost:8000" > .env
-npm run dev
-```
-
-> If your front-end uses Create React App instead of Vite, use `REACT_APP_API_URL` and `npm start`.
 
 ---
 
